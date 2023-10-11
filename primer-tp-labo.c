@@ -50,6 +50,8 @@ void obtenerSeleccion(char * opcionElegida) {
 
 }
 
+
+
 int main() {
     char opcion;
     char *opcionElegida = &opcion;
