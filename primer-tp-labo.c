@@ -7,14 +7,40 @@
 #include <stdio.h>
 #include <ctype.h>
 
-void procedaOperacion(char opcionElegida) {
+void creoArchivoBinario(FILE ** pArchivo){
+  *pArchivo = fopen("propiedades.dat","wb+");
+  if((*pArchivo) != NULL){
+    printf("%s", "Archio binario creado");
+  }
+}
+void listoArchivoBinario(FILE ** pArchivo){
+  //INTENTO COMPLETAMENTE FALLIDO, PERO CREO QUE VA POR ACA
+  int num;
+  *pArchivo = fopen("propiedades.dat","rb");
+  if((*pArchivo) != NULL){
+    //fread(&num, sizeof(struct),1,pArchivo);
+    while(!feof(pArchivo)){
+    printf("%d\n", num);
+    fread(&num,sizeof(int),1,pArchivo);
+    }
+    fclose(pArchivo);
+}
+
+  /*} else {
+    printf("%s", "Error en la apertura del archivo")
+    exit(-1);
+  }
+  */
+}
+
+void procedaOperacion(char opcionElegida, FILE ** pArchivo) {
     printf("Opción elegida: %c\n", opcionElegida);
     char opcionElegidaMinuscula = tolower(opcionElegida);
 
     if(opcionElegidaMinuscula == 'a'){
-      printf("Testing a");
+      creoArchivoBinario(pArchivo);
 
-    }else if(opcionElegidaMinuscula == 'b'){
+    } else if (opcionElegidaMinuscula == 'b'){
 
     }else if(opcionElegidaMinuscula == 'c'){
 
@@ -30,11 +56,11 @@ void procedaOperacion(char opcionElegida) {
       
     }else{
       printf("------------------------- La opcion ingresada no es valida -------------------------\n");
-      obtenerSeleccion(&opcionElegida);
+      obtenerSeleccion(&opcionElegida, pArchivo);
     }
 }
 
-void obtenerSeleccion(char * opcionElegida) {
+void obtenerSeleccion(char * opcionElegida, FILE ** pArchivo) {
     printf("¿Qué operación desea realizar?\n");
     printf("A) Crear archivo binario\n"
            "B) Listar dat\n"
@@ -46,7 +72,7 @@ void obtenerSeleccion(char * opcionElegida) {
            "H) Listar xyz\n");
 
     scanf(" %c", opcionElegida); 
-    procedaOperacion(*opcionElegida);
+    procedaOperacion(*opcionElegida, pArchivo);
 
 }
 
@@ -55,8 +81,9 @@ void obtenerSeleccion(char * opcionElegida) {
 int main() {
     char opcion;
     char *opcionElegida = &opcion;
+    FILE * pArchivo;
 
-    obtenerSeleccion(opcionElegida);
+    obtenerSeleccion(opcionElegida, &pArchivo);
 
     return 0;
 }
