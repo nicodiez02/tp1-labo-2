@@ -3,6 +3,7 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <time.h>
+#include <string.h>
 
 struct propiedad{
   int id;
@@ -18,7 +19,7 @@ struct propiedad{
   char tipo[30];
   char operacion[30];
   char fecha_de_salida[10];
-  _Bool activo;
+  int activo;
 };
 
 
@@ -121,11 +122,10 @@ void procedaOperacion(char opcionElegida, FILE ** pArchivo) {
 
     if(opcionElegidaMinuscula == 'a'){
       creoArchivoBinario(pArchivo);
-
     }else if (opcionElegidaMinuscula == 'b'){
       submenuListar();
     }else if(opcionElegidaMinuscula == 'c'){
-
+      alta();
     }else if(opcionElegidaMinuscula == 'd'){
 
     }else if(opcionElegidaMinuscula == 'e'){
@@ -142,6 +142,82 @@ void procedaOperacion(char opcionElegida, FILE ** pArchivo) {
     }
 }
 
+void comprobar_id(float * id, struct propiedad * nuevaPropiedad){
+  FILE * pArchivo;
+  pArchivo = fopen("propiedades.dat", "rb");
+
+  struct propiedad otraPropiedad;
+  int ent;
+  int flag = 0;
+  ent = (*id);
+
+  if ((*id) < 0){
+    printf("El numero ingresado no puede ser negativo, intentelo de nuevo\n");
+    /* reingreso() */
+  } else if((*id) - ent){
+    printf("El numero ingresado no puede ser decimal, intentelo de nuevo, %f\n", ((*id) - ent));
+    /* reingreso() */
+  } else {
+    if (pArchivo != NULL){
+      fread(&otraPropiedad, sizeof(struct propiedad), 1, pArchivo);
+      while (!feof(pArchivo)){
+        if ((*id) == otraPropiedad.id){
+          flag = 1;
+        }
+        fread(&otraPropiedad, sizeof(struct propiedad),1, pArchivo);
+      }
+      if (flag == 1){
+        printf("El numero ingresado ya existe, intentelo de nuevo\n");
+        /* reingreso() */
+      }
+      fclose(pArchivo);
+    } else {
+      printf("Error en la apertura del archivo");
+      exit(-1);
+    }
+  }
+}
+void alta() {
+    struct propiedad nuevaPropiedad;
+    FILE * pArchivo;
+    pArchivo = fopen("propiedades.dat", "ab");
+    float * id;
+
+    if(pArchivo != NULL){
+      printf("ALTA DE PROPIEDAD:\n");
+      printf("Ingrese el ID de la nueva propiedad:\n");
+      /*  FUNCION COMPROBAR_ID */
+      scanf("%f", id);
+      comprobar_id(id, &nuevaPropiedad);
+      /*  nuevaPropiedad.fecha_de_ingreso = funcion que traiga la fecha actual; */
+      printf("Ingrese la zona de la nueva propiedad (max. 30 caracteres):\n");
+      scanf("%s", &nuevaPropiedad.zona);
+      printf("Ingrese la ciudad de la nueva propiedad:\n");
+      scanf("%s", &nuevaPropiedad.ciudad);
+      printf("Ingrese los dormitorios de la nueva propiedad:\n");
+      scanf("%d", &nuevaPropiedad.dormitorios);
+      printf("Ingrese los banos de la nueva propiedad:\n");
+      scanf("%d", &nuevaPropiedad.banos);
+      printf("Ingrese el total de la superficie de la nueva propiedad:\n");
+      scanf("%f", &nuevaPropiedad.superficie_total);
+      printf("Ingrese la superficie cubierta de la nueva propiedad:\n");
+      scanf("%f", &nuevaPropiedad.superficie_cubierta);
+      printf("Ingrese el precio de la nueva propiedad:\n");
+      scanf("%f", &nuevaPropiedad.precio);
+      printf("Ingrese la moneda de la nueva propiedad:\n");
+      /*  nuevaPropiedad.moneda = funcion para elegir entre peso argentino y dolar; */
+      printf("Ingrese el tipo de la nueva propiedad:\n");
+      /*  nuevaPropiedad.tipo = funcion para elegir entre PH, departamento o casa; */
+      printf("Ingrese el tipo de operacion de la nueva propiedad:\n");
+      /*  nuevaPropiedad.operacion = funcion para elegir entre Venta, Alquiler o Alquiler temporal; */
+      printf("Ingrese la fecha de salida de la nueva propiedad en el formato DD/MM/YYYY:\n");
+      /*  nuevaPropiedad.fecha_de_salida = funcion para ingresar una fecha valida(); */
+      nuevaPropiedad.activo = 1;
+    } else {
+      printf("Error en la apertura del archivo");
+      exit(-1);
+    }
+  }
 void obtenerSeleccion() {
     char opcion;
     char * opcionElegida = &opcion;
