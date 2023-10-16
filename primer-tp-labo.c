@@ -22,18 +22,13 @@ struct propiedad{
   int activo;
 };
 
-
-
 void cargarArchivo(){
-
   struct propiedad nuevaPropiedad;
   FILE *pArchivo;
-
   pArchivo = fopen("propiedades.dat", "ab");
 
   if(pArchivo != NULL){
     for(int i = 0; i < 15; i++){
-  
       nuevaPropiedad.id = i;
       strcpy(nuevaPropiedad.zona, "zona1");
       strcpy(nuevaPropiedad.fecha_de_ingreso, "10/10/2021");
@@ -48,19 +43,16 @@ void cargarArchivo(){
       strcpy(nuevaPropiedad.operacion, "operacion"); 
       strcpy(nuevaPropiedad.fecha_de_salida, "08/11/2002");  
       nuevaPropiedad.activo = 1;   
-
       fwrite(&nuevaPropiedad,sizeof(struct propiedad),1,pArchivo);  
     }
-
     fclose(pArchivo);
   }
-
 }
 
 void creoArchivoBinario(FILE ** pArchivo){
   *pArchivo = fopen("propiedades.dat","wb+");
   if((*pArchivo) != NULL){
-    printf("%s", "Archio binario creado");
+    printf("%s", "Archivo binario creado");
   }
 
   cargarArchivo();
@@ -77,7 +69,6 @@ void submenuListar(){
            "C) Ingreso por teclado de un tipo de propiedad\n"
            "D) Ingreso de un rango de tiempo de ingreso (mínimo y máximo)\n"
            "E) Volver al menú principal\n");
-
     scanf(" %c", opcionElegida);  
     listoArchivoBinario(*opcionElegida);
 }
@@ -89,10 +80,9 @@ void listoArchivoBinario(char opcion){
     pArchivo = fopen("propiedades.dat","rb");
 
   if(opcionToLower == 'a'){
-
     if((pArchivo) != NULL){
       fread(&prop,  sizeof(struct propiedad), 1, pArchivo);
-      while(  !feof(pArchivo) ){
+      while( !feof(pArchivo) ){
         printf("%.2d | %15s | %10s | %10s | %.2d | %.2d | %5.2f | %5.2f | %5.2f | %10s | %10s | %10s | %20s | %d\n",
         prop.id, prop.fecha_de_ingreso, prop.zona, prop.ciudad, prop.dormitorios,
         prop.banos, prop.superficie_total, prop.superficie_cubierta, prop.precio, prop.moneda,
@@ -105,15 +95,11 @@ void listoArchivoBinario(char opcion){
       exit(-1);
     }
     getchar();
-
-
       //Otras opciones..
   }else if(opcionToLower == 'e'){
       obtenerSeleccion();
   }
-
   submenuListar();
-
 }
 
 void procedaOperacion(char opcionElegida, FILE ** pArchivo) {
@@ -169,6 +155,8 @@ void comprobar_id(float * id, struct propiedad * nuevaPropiedad){
       if (flag == 1){
         printf("El numero ingresado ya existe, intentelo de nuevo\n");
         /* reingreso() */
+      } else {
+        (*nuevaPropiedad).id = ent;
       }
       fclose(pArchivo);
     } else {
@@ -186,7 +174,6 @@ void alta() {
     if(pArchivo != NULL){
       printf("ALTA DE PROPIEDAD:\n");
       printf("Ingrese el ID de la nueva propiedad:\n");
-      /*  FUNCION COMPROBAR_ID */
       scanf("%f", id);
       comprobar_id(id, &nuevaPropiedad);
       /*  nuevaPropiedad.fecha_de_ingreso = funcion que traiga la fecha actual; */
@@ -205,11 +192,11 @@ void alta() {
       printf("Ingrese el precio de la nueva propiedad:\n");
       scanf("%f", &nuevaPropiedad.precio);
       printf("Ingrese la moneda de la nueva propiedad:\n");
-      /*  nuevaPropiedad.moneda = funcion para elegir entre peso argentino y dolar; */
+      seleccionoMoneda(&nuevaPropiedad);
       printf("Ingrese el tipo de la nueva propiedad:\n");
-      /*  nuevaPropiedad.tipo = funcion para elegir entre PH, departamento o casa; */
+      seleccionoTipo(&nuevaPropiedad);
       printf("Ingrese el tipo de operacion de la nueva propiedad:\n");
-      /*  nuevaPropiedad.operacion = funcion para elegir entre Venta, Alquiler o Alquiler temporal; */
+      seleccionoOperacion(&nuevaPropiedad);
       printf("Ingrese la fecha de salida de la nueva propiedad en el formato DD/MM/YYYY:\n");
       /*  nuevaPropiedad.fecha_de_salida = funcion para ingresar una fecha valida(); */
       nuevaPropiedad.activo = 1;
@@ -217,7 +204,67 @@ void alta() {
       printf("Error en la apertura del archivo");
       exit(-1);
     }
-  }
+}
+
+void seleccionoMoneda(struct propiedad * nuevaPropiedad){
+    char opcion;
+
+    printf("a) Dolar\n");
+    printf("b) Peso arg\n");
+    printf("Seleccione una moneda (a/b): ");
+    scanf(" %c", &opcion);
+
+    if (tolower(opcion) == 'a'){
+      strcpy((*nuevaPropiedad).moneda, "Dolar");
+    }else if(tolower(opcion) == 'b'){
+      strcpy((*nuevaPropiedad).moneda, "Peso arg");
+    } else {
+      printf("Seleccion no valida. Debe elegir 'a' o 'b'.\n");
+      seleccionoMoneda(nuevaPropiedad);
+    }
+}
+
+void seleccionoTipo(struct propiedad * nuevaPropiedad){
+    char opcion;
+
+    printf("a) PH\n");
+    printf("b) Departamento\n");
+    printf("c) Casa\n");
+    printf("Seleccione un tipo (a/b/c): ");
+    scanf(" %c", &opcion);
+
+    if(tolower(opcion) == 'a'){
+      strcpy((*nuevaPropiedad).tipo, "PH");
+    }else if(tolower(opcion) == 'b'){
+      strcpy((*nuevaPropiedad).tipo, "Departamento");
+    }else if(tolower(opcion) == 'c') {
+      strcpy((*nuevaPropiedad).tipo, "Casa");
+    }else{
+      printf("Seleccion no valida. Debe elegir 'a' o 'b' o 'c'.\n");
+      seleccionoTipo(nuevaPropiedad);
+    }
+}
+
+void seleccionoOperacion(struct propiedad * nuevaPropiedad){
+    char opcion;
+
+    printf("a) Venta\n");
+    printf("b) Alquiler\n");
+    printf("c) Alquiler temporal\n");
+    printf("Seleccione una operacion (a/b/c): ");
+    scanf(" %c", &opcion);
+
+    if(tolower(opcion) == 'a'){
+      strcpy((*nuevaPropiedad).operacion, "Venta");
+    }else if(tolower(opcion) == 'b'){
+      strcpy((*nuevaPropiedad).operacion, "Alquiler");
+    }else if(tolower(opcion) == 'c') {
+      strcpy((*nuevaPropiedad).operacion, "Alquiler temporal");
+    }else{
+      printf("Seleccion no valida. Debe elegir 'a' o 'b' o 'c'.\n");
+      seleccionoOperacion(nuevaPropiedad);
+    }
+}
 void obtenerSeleccion() {
     char opcion;
     char * opcionElegida = &opcion;
@@ -235,14 +282,10 @@ void obtenerSeleccion() {
 
     scanf(" %c", opcionElegida); 
     procedaOperacion(*opcionElegida, pArchivo);
-
 }
 
-
-
 int main() {
+  obtenerSeleccion();
 
-    obtenerSeleccion();
-
-    return 0;
+  return 0;
 }
