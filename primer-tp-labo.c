@@ -263,6 +263,20 @@ void validacion_comprobar_id(float *id, struct propiedad nuevaPropiedad)
   }
 }
 
+void obtengoFechaActual(struct propiedad *nuevaPropiedad)
+{
+  char fecha[11];
+  time_t tiempo;
+  struct tm *infoTiempo;
+  char formato[] = "%d/%m/%Y"; // Formato DD/MM/AAAA
+
+  time(&tiempo);
+  infoTiempo = localtime(&tiempo);
+
+  strftime(fecha, 11, formato, infoTiempo);
+  strcpy((*nuevaPropiedad).fecha_de_ingreso, fecha);
+}
+
 void alta()
 {
   struct propiedad nuevaPropiedad;
@@ -276,7 +290,8 @@ void alta()
 
     validacion_comprobar_id(id, nuevaPropiedad);
 
-    /*  nuevaPropiedad.fecha_de_ingreso = funcion que traiga la fecha actual; */
+    obtengoFechaActual(&nuevaPropiedad);
+
     printf("Ingrese la zona de la nueva propiedad (max. 30 caracteres):\n");
     printf("Ingrese la ciudad de la nueva propiedad:\n");
     scanf("%s", nuevaPropiedad.ciudad);
