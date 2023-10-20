@@ -4,28 +4,14 @@
 #include <stdbool.h>
 #include <time.h>
 #include <string.h>
-
-struct propiedad
-{
-  int id;
-  char fecha_de_ingreso[11];
-  char zona[30];
-  char ciudad[30];
-  int dormitorios;
-  int banos;
-  float superficie_total;
-  float superficie_cubierta;
-  float precio;
-  char moneda[10];
-  char tipo[30];
-  char operacion[30];
-  char fecha_de_salida[11];
-  int activo;
-};
+#ifndef defines.h
+#define defines
+#endif
+#include "./helpers/index.h"
 
 void cargarArchivo()
 {
-  struct propiedad nuevaPropiedad;
+  propiedad propiedad;
   FILE *pArchivo;
   pArchivo = fopen("propiedades.dat", "ab");
 
@@ -33,21 +19,21 @@ void cargarArchivo()
   {
     for (int i = 0; i < 15; i++)
     {
-      nuevaPropiedad.id = i;
-      strcpy(nuevaPropiedad.zona, "zona1");
-      strcpy(nuevaPropiedad.fecha_de_ingreso, "10/10/2021");
-      strcpy(nuevaPropiedad.ciudad, "ciudad1");
-      nuevaPropiedad.dormitorios = i;
-      nuevaPropiedad.banos = i;
-      nuevaPropiedad.superficie_cubierta = i;
-      nuevaPropiedad.superficie_total = i;
-      nuevaPropiedad.precio = i;
-      strcpy(nuevaPropiedad.moneda, "moneda");
-      strcpy(nuevaPropiedad.tipo, "tipo");
-      strcpy(nuevaPropiedad.operacion, "operacion");
-      strcpy(nuevaPropiedad.fecha_de_salida, "08/11/2002");
-      nuevaPropiedad.activo = 1;
-      fwrite(&nuevaPropiedad, sizeof(struct propiedad), 1, pArchivo);
+      propiedad.id = i;
+      strcpy(propiedad.zona, "zona1");
+      strcpy(propiedad.fecha_de_ingreso, "10/10/2021");
+      strcpy(propiedad.ciudad, "ciudad1");
+      propiedad.dormitorios = i;
+      propiedad.banos = i;
+      propiedad.superficie_cubierta = i;
+      propiedad.superficie_total = i;
+      propiedad.precio = i;
+      strcpy(propiedad.moneda, "moneda");
+      strcpy(propiedad.tipo, "tipo");
+      strcpy(propiedad.operacion, "operacion");
+      strcpy(propiedad.fecha_de_salida, "08/11/2002");
+      propiedad.activo = 1;
+      fwrite(&propiedad, sizeof(propiedad), 1, pArchivo);
     }
     fclose(pArchivo);
   }
@@ -68,21 +54,21 @@ void listoArchivoBinario(char opcion)
 {
   char opcionToLower = tolower(opcion);
   FILE *pArchivo;
-  struct propiedad prop;
+  propiedad prop;
   pArchivo = fopen("propiedades.dat", "rb");
 
   if (opcionToLower == 'a')
   {
     if ((pArchivo) != NULL)
     {
-      fread(&prop, sizeof(struct propiedad), 1, pArchivo);
+      fread(&prop, sizeof(propiedad), 1, pArchivo);
       while (!feof(pArchivo))
       {
         printf("%.2d | %15s | %10s | %10s | %.2d | %.2d | %5.2f | %5.2f | %5.2f | %10s | %10s | %10s | %20s | %d\n",
                prop.id, prop.fecha_de_ingreso, prop.zona, prop.ciudad, prop.dormitorios,
                prop.banos, prop.superficie_total, prop.superficie_cubierta, prop.precio, prop.moneda,
                prop.tipo, prop.operacion, prop.fecha_de_salida, prop.activo);
-        fread(&prop, sizeof(struct propiedad), 1, pArchivo);
+        fread(&prop, sizeof(propiedad), 1, pArchivo);
       }
       fclose(pArchivo);
     }
@@ -117,12 +103,12 @@ void submenuListar()
   listoArchivoBinario(*opcionElegida);
 }
 
-int comprobar_id(float *id, struct propiedad *nuevaPropiedad)
+int comprobar_id(float *id, propiedad *nuevaPropiedad)
 {
   FILE *pArchivo;
   pArchivo = fopen("propiedades.dat", "rb");
 
-  struct propiedad otraPropiedad;
+  propiedad otraPropiedad;
   int ent;
   int flag = 0;
   ent = (*id);
@@ -141,14 +127,14 @@ int comprobar_id(float *id, struct propiedad *nuevaPropiedad)
   {
     if (pArchivo != NULL)
     {
-      fread(&otraPropiedad, sizeof(struct propiedad), 1, pArchivo);
+      fread(&otraPropiedad, sizeof(propiedad), 1, pArchivo);
       while (!feof(pArchivo))
       {
         if ((*id) == otraPropiedad.id)
         {
           flag = 1;
         }
-        fread(&otraPropiedad, sizeof(struct propiedad), 1, pArchivo);
+        fread(&otraPropiedad, sizeof(propiedad), 1, pArchivo);
       }
       if (flag == 1)
       {
@@ -170,7 +156,7 @@ int comprobar_id(float *id, struct propiedad *nuevaPropiedad)
   }
 }
 
-void seleccionoMoneda(struct propiedad *nuevaPropiedad)
+void seleccionoMoneda(propiedad *nuevaPropiedad)
 {
   char opcion;
 
@@ -194,7 +180,7 @@ void seleccionoMoneda(struct propiedad *nuevaPropiedad)
   }
 }
 
-void seleccionoTipo(struct propiedad *nuevaPropiedad)
+void seleccionoTipo(propiedad *nuevaPropiedad)
 {
   char opcion;
 
@@ -223,7 +209,7 @@ void seleccionoTipo(struct propiedad *nuevaPropiedad)
   }
 }
 
-void seleccionoOperacion(struct propiedad *nuevaPropiedad)
+void seleccionoOperacion(propiedad *nuevaPropiedad)
 {
   char opcion;
 
@@ -252,7 +238,7 @@ void seleccionoOperacion(struct propiedad *nuevaPropiedad)
   }
 }
 
-void validacion_comprobar_id(float *id, struct propiedad nuevaPropiedad)
+void validacion_comprobar_id(float *id, propiedad nuevaPropiedad)
 {
   int cerrarComprobar = 1;
   while (cerrarComprobar)
@@ -263,7 +249,7 @@ void validacion_comprobar_id(float *id, struct propiedad nuevaPropiedad)
   }
 }
 
-void obtengoFechaActual(struct propiedad *nuevaPropiedad)
+void obtengoFechaActual(propiedad *nuevaPropiedad)
 {
   char fecha[11];
   time_t tiempo;
@@ -279,7 +265,7 @@ void obtengoFechaActual(struct propiedad *nuevaPropiedad)
 
 void alta()
 {
-  struct propiedad nuevaPropiedad;
+  propiedad nuevaPropiedad;
   FILE *pArchivo;
   pArchivo = fopen("propiedades.dat", "ab");
   float *id;
@@ -329,21 +315,29 @@ void procedaOperacion(char opcionElegida, FILE **pArchivo)
 
   if (opcionElegidaMinuscula == 'a')
   {
+    // 4) Creo un archivo binario 'propiedades.dat'
     creoArchivoBinario(pArchivo);
     return;
   }
   else if (opcionElegidaMinuscula == 'b')
   {
+    // 5) Listar dat: emitir por pantalla el contenido del archivo binario con sus respectivos títulos de columna, considerando un submenú que dará a elegir al usuario:
+    //   a) listar todos (altas y bajas)
+    //   b) sólo el campo activo.
+    //   c) el ingreso por teclado de un tipo de propiedad
+    //   d) el ingreso de un rango de tiempo de ingreso (mínimo y máximo)
     submenuListar();
     return;
   }
   else if (opcionElegidaMinuscula == 'c')
   {
+    // Punto 6)
     alta();
     return;
   }
   else if (opcionElegidaMinuscula == 'd')
   {
+    buscar();
   }
   else if (opcionElegidaMinuscula == 'e')
   {
