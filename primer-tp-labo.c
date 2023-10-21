@@ -9,11 +9,11 @@
 #endif
 #include "./helpers/index.h"
 
-void cargarArchivo()
+void cargarArchivo(int * posicionColumnaActivo)
 {
+
   propiedad propiedad;
-  FILE *pArchivo;
-  pArchivo = fopen("propiedades.dat", "ab");
+  FILE * pArchivo = fopen("propiedades.dat", "ab");
 
   if (pArchivo != NULL)
   {
@@ -33,13 +33,20 @@ void cargarArchivo()
       strcpy(propiedad.operacion, "operacion");
       strcpy(propiedad.fecha_de_salida, "08/11/2002");
       propiedad.activo = 1;
+
+      if(i == 0){
+        (*posicionColumnaActivo) = ftell(pArchivo);
+      }
+
       fwrite(&propiedad, sizeof(propiedad), 1, pArchivo);
+
     }
     fclose(pArchivo);
   }
 }
 
 void creoArchivoBinario(FILE **pArchivo)
+
 {
   *pArchivo = fopen("propiedades.dat", "wb+");
   if ((*pArchivo) != NULL)
@@ -47,9 +54,8 @@ void creoArchivoBinario(FILE **pArchivo)
     printf("%s", "Archivo binario creado");
   }
 
-  cargarArchivo();
-  // obtenerSeleccion();
 }
+
 void listoArchivoBinario(char opcion)
 {
   char opcionToLower = tolower(opcion);
@@ -62,6 +68,7 @@ void listoArchivoBinario(char opcion)
     if ((pArchivo) != NULL)
     {
       fread(&prop, sizeof(propiedad), 1, pArchivo);
+      
       while (!feof(pArchivo))
       {
         printf("%.2d | %15s | %10s | %10s | %.2d | %.2d | %5.2f | %5.2f | %5.2f | %10s | %10s | %10s | %20s | %d\n",
@@ -70,6 +77,8 @@ void listoArchivoBinario(char opcion)
                prop.tipo, prop.operacion, prop.fecha_de_salida, prop.activo);
         fread(&prop, sizeof(propiedad), 1, pArchivo);
       }
+
+      
       fclose(pArchivo);
     }
     else
@@ -79,6 +88,16 @@ void listoArchivoBinario(char opcion)
     }
     getchar();
     // Otras opciones..
+  }else if(opcionToLower == 'b'){
+      
+      printf("ACTIVO\n");
+      printf("------\n");
+
+      while (!feof(pArchivo)){
+        fread(&prop, sizeof(propiedad), 1, pArchivo);
+        printf("%d\n", prop.activo);
+      }
+
   }
   else if (opcionToLower == 'e')
   {
@@ -88,10 +107,9 @@ void listoArchivoBinario(char opcion)
   // submenuListar();
 }
 
-void submenuListar()
+char submenuListar()
 {
-  char opcion;
-  char *opcionElegida = &opcion;
+  char opcionElegida = "";
 
   printf("\n¿Qué operación desea listar?\n");
   printf("A) Listar todos (altas y bajas)\n"
@@ -99,8 +117,9 @@ void submenuListar()
          "C) Ingreso por teclado de un tipo de propiedad\n"
          "D) Ingreso de un rango de tiempo de ingreso (mínimo y máximo)\n"
          "E) Volver al menú principal\n");
-  scanf(" %c", opcionElegida);
-  listoArchivoBinario(*opcionElegida);
+  scanf(" %c", &opcionElegida);
+
+  return opcionElegida;
 }
 
 int comprobar_id(float *id, propiedad *nuevaPropiedad)
@@ -308,61 +327,9 @@ void alta()
   }
 }
 
-void procedaOperacion(char opcionElegida, FILE **pArchivo)
+char obtenerSeleccion()
 {
-  printf("Opción elegida: %c\n", opcionElegida);
-  char opcionElegidaMinuscula = tolower(opcionElegida);
-
-  if (opcionElegidaMinuscula == 'a')
-  {
-    // 4) Creo un archivo binario 'propiedades.dat'
-    creoArchivoBinario(pArchivo);
-    return;
-  }
-  else if (opcionElegidaMinuscula == 'b')
-  {
-    // 5) Listar dat: emitir por pantalla el contenido del archivo binario con sus respectivos títulos de columna, considerando un submenú que dará a elegir al usuario:
-    //   a) listar todos (altas y bajas)
-    //   b) sólo el campo activo.
-    //   c) el ingreso por teclado de un tipo de propiedad
-    //   d) el ingreso de un rango de tiempo de ingreso (mínimo y máximo)
-    submenuListar();
-    return;
-  }
-  else if (opcionElegidaMinuscula == 'c')
-  {
-    // Punto 6)
-    alta();
-    return;
-  }
-  else if (opcionElegidaMinuscula == 'd')
-  {
-    buscar();
-  }
-  else if (opcionElegidaMinuscula == 'e')
-  {
-  }
-  else if (opcionElegidaMinuscula == 'f')
-  {
-  }
-  else if (opcionElegidaMinuscula == 'g')
-  {
-  }
-  else if (opcionElegidaMinuscula == 'h')
-  {
-  }
-  else
-  {
-    printf("------------------------- La opcion ingresada no es valida -------------------------\n");
-    // obtenerSeleccion(&opcionElegida, pArchivo);
-  }
-}
-
-void obtenerSeleccion()
-{
-  char opcion;
-  char *opcionElegida = &opcion;
-  FILE *pArchivo;
+  char opcionElegida;
 
   printf("¿Qué operación desea realizar?\n");
   printf("A) Crear archivo binario\n"
@@ -374,17 +341,56 @@ void obtenerSeleccion()
          "G) Baja física\n"
          "H) Listar xyz\n");
 
-  scanf(" %c", opcionElegida);
-  procedaOperacion(*opcionElegida, &pArchivo);
+  scanf(" %c", &opcionElegida);
+
+  return opcionElegida;
 }
+
+#include <stdio.h>
+#include <ctype.h>
 
 int main()
 {
-  int valor = 1;
+  int continuar = 1; 
+  int posicionColumnaActivo = 0;
 
-  while (valor == 1)
+  while (continuar)
   {
-    obtenerSeleccion();
+    char opcionElegida, opcionElegidaMinuscula, subMenuOpcionElegida;
+    FILE *pArchivo;
+
+    opcionElegida = obtenerSeleccion();
+
+    printf("Opción elegida: %c\n", opcionElegida);
+    opcionElegidaMinuscula = tolower(opcionElegida);
+
+    if (opcionElegidaMinuscula == 'a')
+    {
+      creoArchivoBinario(&pArchivo);
+      cargarArchivo(&posicionColumnaActivo);
+      printf("POSICION COLUMNA ACTIVO: %i", posicionColumnaActivo);
+    }
+    else if (opcionElegidaMinuscula == 'b')
+    {
+      subMenuOpcionElegida = submenuListar();
+      listoArchivoBinario(subMenuOpcionElegida);
+    }
+    else if (opcionElegidaMinuscula == 'c')
+    {
+      alta();
+    }
+    else if (opcionElegidaMinuscula == 'd')
+    {
+      buscar();
+    }
+    else if (opcionElegidaMinuscula == 'q') // 'q' para salir
+    {
+      continuar = 0; // Cambia continuar a 0 para salir del bucle.
+    }
+    else
+    {
+      printf("------------------------- La opcion ingresada no es valida -------------------------\n");
+    }
   }
 
   return 0;
