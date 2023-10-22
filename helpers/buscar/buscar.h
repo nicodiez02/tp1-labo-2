@@ -16,8 +16,12 @@ char printBuscar()
     printf("c) Casa\n");
     printf("Seleccione un tipo (a/b/c): \n");
     scanf(" %c", &seleccion);
+    return seleccion;
+  } else {
+    printf("Ingrese el ID a buscar \n");
+    scanf(" %i", &seleccion);
+    return seleccion; 
   }
-  return seleccion;
 };
 
 void buscar()
@@ -31,7 +35,7 @@ void buscar()
     fseek(pArchivo, 0, SEEK_END);
     nReg = ftell(pArchivo) / sizeof(propiedad);
     // Me falta banda pero subi un buen progreso
-    printf("No de registros en el archivo = %d\n", nReg);
+    printf("Nro de registros en el archivo = %d\n", nReg);
   }
   else
   {

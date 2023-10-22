@@ -12,6 +12,10 @@
 void cargarArchivo(int * posicionColumnaActivo)
 {
 
+  int dia = (rand() % 28) + 1 ;
+  int mes = (rand() % 12) + 1;
+  int año = (rand() % 2023) + 2000;
+
   propiedad propiedad;
   FILE * pArchivo = fopen("propiedades.dat", "ab");
 
@@ -19,9 +23,17 @@ void cargarArchivo(int * posicionColumnaActivo)
   {
     for (int i = 0; i < 15; i++)
     {
+
+      int dia = (rand() % 28) + 1 ;
+      int mes = (rand() % 12) + 1;
+      int año = (rand() % 23) + 2000;
+      char fecha[12];
+
+      sprintf(fecha, "%d/%d/%d", dia,mes,año);
+
       propiedad.id = i;
       strcpy(propiedad.zona, "zona1");
-      strcpy(propiedad.fecha_de_ingreso, "10/10/2021");
+      strcpy(propiedad.fecha_de_ingreso, fecha);
       strcpy(propiedad.ciudad, "ciudad1");
       propiedad.dormitorios = i;
       propiedad.banos = i;
@@ -55,73 +67,7 @@ void creoArchivoBinario(FILE **pArchivo)
   }
 
 }
-
-void listoArchivoBinario(char opcion)
-{
-  char opcionToLower = tolower(opcion);
-  FILE *pArchivo;
-  propiedad prop;
-  pArchivo = fopen("propiedades.dat", "rb");
-
-  if (opcionToLower == 'a')
-  {
-    if ((pArchivo) != NULL)
-    {
-      fread(&prop, sizeof(propiedad), 1, pArchivo);
-      
-      while (!feof(pArchivo))
-      {
-        printf("%.2d | %15s | %10s | %10s | %.2d | %.2d | %5.2f | %5.2f | %5.2f | %10s | %10s | %10s | %20s | %d\n",
-               prop.id, prop.fecha_de_ingreso, prop.zona, prop.ciudad, prop.dormitorios,
-               prop.banos, prop.superficie_total, prop.superficie_cubierta, prop.precio, prop.moneda,
-               prop.tipo, prop.operacion, prop.fecha_de_salida, prop.activo);
-        fread(&prop, sizeof(propiedad), 1, pArchivo);
-      }
-
-      
-      fclose(pArchivo);
-    }
-    else
-    {
-      printf("Error en la apertura del archivo");
-      exit(-1);
-    }
-    getchar();
-    // Otras opciones..
-  }else if(opcionToLower == 'b'){
-      
-      printf("ACTIVO\n");
-      printf("------\n");
-
-      while (!feof(pArchivo)){
-        fread(&prop, sizeof(propiedad), 1, pArchivo);
-        printf("%d\n", prop.activo);
-      }
-
-  }
-  else if (opcionToLower == 'e')
-  {
-    // obtenerSeleccion();
-    return;
-  }
-  // submenuListar();
-}
-
-char submenuListar()
-{
-  char opcionElegida = "";
-
-  printf("\n¿Qué operación desea listar?\n");
-  printf("A) Listar todos (altas y bajas)\n"
-         "B) Listar solo el campo activo\n"
-         "C) Ingreso por teclado de un tipo de propiedad\n"
-         "D) Ingreso de un rango de tiempo de ingreso (mínimo y máximo)\n"
-         "E) Volver al menú principal\n");
-  scanf(" %c", &opcionElegida);
-
-  return opcionElegida;
-}
-
+ 
 int comprobar_id(float *id, propiedad *nuevaPropiedad)
 {
   FILE *pArchivo;
@@ -351,6 +297,8 @@ char obtenerSeleccion()
 
 int main()
 {
+
+  srand(time(NULL));
   int continuar = 1; 
   int posicionColumnaActivo = 0;
 
@@ -372,6 +320,7 @@ int main()
     }
     else if (opcionElegidaMinuscula == 'b')
     {
+
       subMenuOpcionElegida = submenuListar();
       listoArchivoBinario(subMenuOpcionElegida);
     }
