@@ -117,72 +117,100 @@ if (opcionToLower == 'a'){
         }
     }else if(opcionToLower == 'd'){
 
+        //falta validar como ingresa la fecha, tiene que ser formato 00/00/0000
+        //si ingresa 01,02, 03 etc se rompe. Creo que es porque lo lee como /0 y hace un salto de linea en vez de leer el dato
+
         printf("INGRESANDO FECHA DE INICIO:\n\n");
         printf("DIA:");
-        scanf("%i", diaInicio);
+        scanf("%i", &diaInicio);
 
-        prinf("\n");
+        printf("\n");
 
         printf("MES:");
-        scanf("%i", mesInicio);
+        scanf("%i", &mesInicio);
 
-        prinf("\n");
+        printf("\n");
 
         printf("AÑO:");
-        scanf("%i", añoInicio);
+        scanf("%i", &añoInicio);
 
-        prinf("\n");
+        printf("\n");
 
         printf("INGRESANDO FECHA DE FIN:\n\n");
         printf("DIA:");
-        scanf("%i", diaFin);
+        scanf("%i", &diaFin);
 
-        prinf("\n");
+        printf("\n");
 
         printf("MES:");
-        scanf("%i", mesFin);
+        scanf("%i", &mesFin);
 
-        prinf("\n");
+        printf("\n");
 
         printf("AÑO:");
-        scanf("%i", añoFin);
+        scanf("%i", &añoFin);
+
+
 
         while (!feof(pArchivo)){
             //Ir comparando cada fecha del archivo con las fechas ingresadas. La fecha del archivo debe ser > a la fecha inicial y < a la final.
             fread(&prop, sizeof(propiedad), 1, pArchivo);
-            printf("FECHA DE INGRESO: %s\n", prop.fecha_de_ingreso);
 
             int longitud = strlen(prop.fecha_de_ingreso);
             int contadorDeBarras = 0;
-            char diaStruct[3];
-            char mesStruct[3];
-            char añoStruct[5];
+            int contadorAuxiliar = 0;
+            char diaStruct[4];
+            char mesStruct[4];
+            char añoStruct[6];
 
             for (int i = 0; i < longitud; i++) {
                 //La idea es recorrer la fecha para separar los strings DD MM AA, convertirlos en numeros y compararlos con la fecha ingresada
                 char caracter = prop.fecha_de_ingreso[i];
-                printf("%c\n", caracter);
 
-                if(caracter != "/"){
+                if(caracter != '/'){
+
                     if(contadorDeBarras == 0){
-                        //dia
 
                         //Aca iria pusheando el caracter del dia para formar el string del dia. Dsps este string hay que convertirlo a numero
-                        diaStruct[i];
+                        diaStruct[contadorAuxiliar] = caracter;
+                        contadorAuxiliar++;
 
                     }else if(contadorDeBarras == 1){
-                        //mes
+
+                        mesStruct[contadorAuxiliar] = caracter;
+                        contadorAuxiliar++;
 
                     }else{
-                        //año
+
+                        añoStruct[contadorAuxiliar] = caracter;
+                        contadorAuxiliar++;
 
                     }
+                }else{
+                    contadorAuxiliar = 0;
+                    contadorDeBarras++;
                 }
-
-                contadorDeBarras++;
-                
-
             }
+
+
+            diaStruct[3] = '\0'; 
+            mesStruct[3] = '\0';
+            añoStruct[5] = '\0';
+
+            int diaStructNum = atoi(&diaStruct);
+            int mesStructNum = atoi(&mesStruct);
+            int añoStructNum = atoi(&añoStruct);
+
+            if(añoStructNum >= añoInicio && añoStructNum <= añoFin){
+                printf("FECHA: %s\n", prop.fecha_de_ingreso);
+            }else if(mesStruct >= mesInicio && mesStruct <= mesFin){
+                printf("FECHA: %s\n", prop.fecha_de_ingreso);
+            }else if(diaStruct >= diaInicio && diaStruct <= diaFin){
+                printf("FECHA: %s\n", prop.fecha_de_ingreso);
+            }
+
+
+            
         }
             
     }else if (opcionToLower == 'e')

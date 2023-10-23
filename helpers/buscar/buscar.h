@@ -19,7 +19,7 @@ char printBuscar()
     return seleccion;
   } else {
     printf("Ingrese el ID a buscar \n");
-    scanf(" %i", &seleccion);
+    //scanf(" %i", &seleccion);
     return seleccion; 
   }
 };

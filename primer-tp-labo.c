@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <time.h>
 #include <string.h>
-#ifndef defines.h
+#ifndef defines
 #define defines
 #endif
 #include "./helpers/index.h"
@@ -12,9 +12,7 @@
 void cargarArchivo(int * posicionColumnaActivo)
 {
 
-  int dia = (rand() % 28) + 1 ;
-  int mes = (rand() % 12) + 1;
-  int año = (rand() % 2023) + 2000;
+
 
   propiedad propiedad;
   FILE * pArchivo = fopen("propiedades.dat", "ab");
@@ -29,7 +27,7 @@ void cargarArchivo(int * posicionColumnaActivo)
       int año = (rand() % 23) + 2000;
       char fecha[12];
 
-      sprintf(fecha, "%d/%d/%d", dia,mes,año);
+      sprintf(fecha, "%02d/%02d/%04d", dia, mes, año);
 
       propiedad.id = i;
       strcpy(propiedad.zona, "zona1");
