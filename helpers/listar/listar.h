@@ -197,15 +197,15 @@ if (opcionToLower == 'a'){
             mesStruct[3] = '\0';
             añoStruct[5] = '\0';
 
-            int diaStructNum = atoi(&diaStruct);
-            int mesStructNum = atoi(&mesStruct);
-            int añoStructNum = atoi(&añoStruct);
+            int diaStructNum = atoi(diaStruct);
+            int mesStructNum = atoi(mesStruct);
+            int añoStructNum = atoi(añoStruct);
 
             if(añoStructNum >= añoInicio && añoStructNum <= añoFin){
                 printf("FECHA: %s\n", prop.fecha_de_ingreso);
-            }else if(mesStruct >= mesInicio && mesStruct <= mesFin){
+            }else if(mesStructNum >= mesInicio && mesStructNum <= mesFin){
                 printf("FECHA: %s\n", prop.fecha_de_ingreso);
-            }else if(diaStruct >= diaInicio && diaStruct <= diaFin){
+            }else if(diaStructNum >= diaInicio && diaStructNum <= diaFin){
                 printf("FECHA: %s\n", prop.fecha_de_ingreso);
             }
 
@@ -223,7 +223,7 @@ if (opcionToLower == 'a'){
 
 char submenuListar()
 {
-  char opcionElegida = "";
+  char opcionElegida = '\0';
 
   printf("\n¿Qué operación desea listar?\n");
   printf("A) Listar todos (altas y bajas)\n"
