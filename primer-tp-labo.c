@@ -310,7 +310,8 @@ int main() {
     } else if (opcionElegidaMinuscula == 'c') {
 
       int error = 1;
-      for (int i = 0; i < 3; i++) {
+      int numPropiedades = sizeof(propiedades) / sizeof(propiedades[0]);
+      for (int i = 0; i < numPropiedades; i++) {
 
         do 
         { 
