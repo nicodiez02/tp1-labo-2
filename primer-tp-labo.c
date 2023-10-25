@@ -5,7 +5,7 @@
 #include <string.h>
 #include <time.h>
 #ifndef defines
-#define defines
+#define definesb
 #endif
 #include "./helpers/index.h"
 
@@ -54,46 +54,40 @@ void creoArchivoBinario(FILE **pArchivo) {
   }
 }
 
-int comprobar_id(float *id, propiedad *nuevaPropiedad) {
+int comprobarId(int id) {
   FILE *pArchivo;
   pArchivo = fopen("propiedades.dat", "rb");
 
   propiedad otraPropiedad;
-  int ent;
+  int error = 0;
   int flag = 0;
-  ent = (*id);
 
-  if ((*id) < 0) {
+  if (id < 0) {
     printf("El numero ingresado no puede ser negativo, intentelo de nuevo\n");
-    return 1;
-  } else if ((*id) - ent) {
-    printf(
-        "El numero ingresado no puede ser decimal, intentelo de nuevo, "
-        "%f\n",
-        ((*id) - ent));
-    return 1;
+    error = 1;
   } else {
+
     if (pArchivo != NULL) {
       fread(&otraPropiedad, sizeof(propiedad), 1, pArchivo);
       while (!feof(pArchivo)) {
-        if ((*id) == otraPropiedad.id) {
+        if (id == otraPropiedad.id) {
           flag = 1;
         }
         fread(&otraPropiedad, sizeof(propiedad), 1, pArchivo);
       }
+
       if (flag == 1) {
         printf("El numero ingresado ya existe, intentelo de nuevo\n");
-        return 1;
-      } else {
-        (*nuevaPropiedad).id = ent;
-        fclose(pArchivo);
-        return 0;
-      }
+        error = 1;
+      } 
+
     } else {
       printf("Error en la apertura del archivo");
       exit(-1);
     }
   }
+
+  return error;
 }
 
 void seleccionoMoneda(propiedad *nuevaPropiedad) {
@@ -156,14 +150,7 @@ void seleccionoOperacion(propiedad *nuevaPropiedad) {
   }
 }
 
-void validacion_comprobar_id(float *id, propiedad nuevaPropiedad) {
-  int cerrarComprobar = 1;
-  while (cerrarComprobar) {
-    printf("Ingrese el ID de la nueva propiedad:\n");
-    scanf("%f", id);
-    cerrarComprobar = comprobar_id(id, &nuevaPropiedad);
-  }
-}
+
 
 void obtengoFechaActual(propiedad *nuevaPropiedad) {
   char fecha[11];
@@ -178,49 +165,89 @@ void obtengoFechaActual(propiedad *nuevaPropiedad) {
   strcpy((*nuevaPropiedad).fecha_de_ingreso, fecha);
 }
 
-void alta() {
+int alta(const char *campoAComprobar) {
+  int error = 0;
+  int id;
+  char inputId[10];
   propiedad nuevaPropiedad;
+
+
+  //REVISAR VALIDACION DE ID. FALTA LA PARTE DE COMPROBAR SI SE INGRESO UNA CADENA O UN NUMOER
+  //LA VALIDACION DE SI ES DECIMAL YA ESTA ECHA
+  if (strcmp(campoAComprobar, "id") == 0) {
+    printf("Ingrese el id:");
+    scanf("%s", inputId);
+    if (strchr(inputId, ".") == NULL || strchr(inputId, ",") == NULL) { //verifico si es decimal
+      
+      id = atoi(inputId); //Validar retorno de atoi para ver si pudo convertir a entero, si no pudo es un string
+      error = comprobarId(id);
+
+      if(error == 0){
+        nuevaPropiedad.id = inputId;
+      }
+
+    } else {
+      error = 1;
+    }
+  }
+
+  if (strcmp(campoAComprobar, "zona") == 0) {
+    printf("Ingrese la zona de la nueva propiedad (max. 30 caracteres):");
+    scanf("%s", nuevaPropiedad.zona);
+
+  }
+
+  
+  while (getchar() != '\n');  // Limpiar el búfer de entrada
+  return error;
+}
+
+/*
+propiedad nuevaPropiedad;
   FILE *pArchivo;
   pArchivo = fopen("propiedades.dat", "ab");
-  float *id;
+  int id, result;
 
   if (pArchivo != NULL) {
     printf("ALTA DE PROPIEDAD:\n");
 
-    validacion_comprobar_id(id, nuevaPropiedad);
 
+    nuevaPropiedad.id = id;
     obtengoFechaActual(&nuevaPropiedad);
 
-    printf("Ingrese la zona de la nueva propiedad (max. 30 caracteres):\n");
-    printf("Ingrese la ciudad de la nueva propiedad:\n");
+    printf("Ingrese la zona de la nueva propiedad (max. 30 caracteres):");
+    scanf("%s", nuevaPropiedad.zona);
+    printf("Ingrese la ciudad de la nueva propiedad (max. 30 caracteres):");
     scanf("%s", nuevaPropiedad.ciudad);
-    printf("Ingrese los dormitorios de la nueva propiedad:\n");
+    printf("Ingrese los dormitorios de la nueva propiedad:");
     scanf("%d", &nuevaPropiedad.dormitorios);
-    printf("Ingrese los banos de la nueva propiedad:\n");
+    printf("Ingrese los banos de la nueva propiedad:");
     scanf("%d", &nuevaPropiedad.banos);
-    printf("Ingrese el total de la superficie de la nueva propiedad:\n");
+    printf("Ingrese el total de la superficie de la nueva propiedad:");
     scanf("%f", &nuevaPropiedad.superficie_total);
-    printf("Ingrese la superficie cubierta de la nueva propiedad:\n");
+    printf("Ingrese la superficie cubierta de la nueva propiedad:");
     scanf("%f", &nuevaPropiedad.superficie_cubierta);
-    printf("Ingrese el precio de la nueva propiedad:\n");
+    printf("Ingrese el precio de la nueva propiedad:");
     scanf("%f", &nuevaPropiedad.precio);
-    printf("Ingrese la moneda de la nueva propiedad:\n");
+    printf("Ingrese la moneda de la nueva propiedad:");
     seleccionoMoneda(&nuevaPropiedad);
-    printf("Ingrese el tipo de la nueva propiedad:\n");
+    printf("Ingrese el tipo de la nueva propiedad:");
     seleccionoTipo(&nuevaPropiedad);
-    printf("Ingrese el tipo de operacion de la nueva propiedad:\n");
+    printf("Ingrese el tipo de operacion de la nueva propiedad:");
     seleccionoOperacion(&nuevaPropiedad);
     printf(
         "Ingrese la fecha de salida de la nueva propiedad en el formato "
         "DD/MM/YYYY:\n");
-    /*  nuevaPropiedad.fecha_de_salida = funcion para ingresar una fecha
-     * valida(); */
+
     nuevaPropiedad.activo = 1;
   } else {
     printf("Error en la apertura del archivo");
     exit(-1);
   }
 }
+*/
+  
+
 
 char obtenerSeleccion() {
   char opcionElegida;
@@ -248,6 +275,22 @@ int main() {
   srand(time(NULL));
   int continuar = 1;
   int posicionColumnaActivo = 0;
+  char *propiedades[] = {
+   "id",
+   "fecha de ingreso",
+   "zona",
+   "ciudad",
+   "dormitorios",
+   "banos",
+   "superficie total",
+   "superficie cubierta",
+   "precio",
+   "moneda",
+   "tipo",
+   "operacion",
+   "fecha de salida",
+   "activo"
+  };
 
   while (continuar) {
     char opcionElegida, opcionElegidaMinuscula, subMenuOpcionElegida;
@@ -255,18 +298,32 @@ int main() {
 
     opcionElegida = obtenerSeleccion();
 
-    printf("Opción elegida: %c\n", opcionElegida);
     opcionElegidaMinuscula = tolower(opcionElegida);
 
     if (opcionElegidaMinuscula == 'a') {
       creoArchivoBinario(&pArchivo);
       cargarArchivo(&posicionColumnaActivo);
-      printf("POSICION COLUMNA ACTIVO: %i", posicionColumnaActivo);
+
     } else if (opcionElegidaMinuscula == 'b') {
       subMenuOpcionElegida = submenuListar();
       listoArchivoBinario(subMenuOpcionElegida);
     } else if (opcionElegidaMinuscula == 'c') {
-      alta();
+
+      int error = 1;
+      for (int i = 0; i < 3; i++) {
+
+        do 
+        { 
+          error = alta(propiedades[i]);
+
+          if(error == 1){
+            printf("Revise la informacion introducid para el campo %s y reintentelo nuevamente \n", propiedades[i]);
+          }
+        }while (error == 1);
+        
+
+      }
+
     } else if (opcionElegidaMinuscula == 'd') {
       bool terminarBuscar = 0;
       while (!terminarBuscar) {

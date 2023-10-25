@@ -27,10 +27,11 @@ void listoArchivoBinario(char opcion){
   propiedad prop;
   pArchivo = fopen("propiedades.dat", "rb");
 
-    printf(" %c", opcionToLower);
 if (opcionToLower == 'a'){
     if ((pArchivo) != NULL){
-      printf("%2s | %22s| %10s | %10s | %11s | %6s  | %15s| %18s | %7s | %10s | %10s | %10s | %21s | %5s\n",
+
+        printf("\n");
+      printf("%2s | %22s | %10s | %10s | %11s | %6s  | %15s| %18s | %7s | %10s | %10s | %10s | %21s | %5s\n",
        "ID", "Fecha de Ingreso", "Zona", "Ciudad", "Dormitorios", "Baños", "Superficie Total",
        "Superficie Cubierta", "Precio", "Moneda", "Tipo", "Operación", "Fecha de Salida", "Activo");
       fread(&prop, sizeof(propiedad), 1, pArchivo);
