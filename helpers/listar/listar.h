@@ -119,41 +119,50 @@ if (opcionToLower == 'a'){
 
         //falta validar como ingresa la fecha, tiene que ser formato 00/00/0000
         //si ingresa 01,02, 03 etc se rompe. Creo que es porque lo lee como /0 y hace un salto de linea en vez de leer el dato
+        int error = 0;
+        while (error == 0)
+        {
 
-        printf("INGRESANDO FECHA DE INICIO:\n\n");
-        printf("DIA:");
-        scanf("%i", &diaInicio);
+            printf("\nINGRESANDO FECHA DE INICIO:\n");
+            printf("DIA:");
+            scanf("%d", &diaInicio);
 
-        printf("\n");
+            printf("MES:");
+            scanf("%d", &mesInicio);
 
-        printf("MES:");
-        scanf("%i", &mesInicio);
+            printf("AÑO:");
+            scanf("%d", &añoInicio);
 
-        printf("\n");
+            printf("\nINGRESANDO FECHA DE FIN:\n");
+            printf("DIA:");
+            scanf("%d", &diaFin);
 
-        printf("AÑO:");
-        scanf("%i", &añoInicio);
+            printf("MES:");
+            scanf("%d", &mesFin);
 
-        printf("\n");
+            printf("AÑO:");
+            scanf("%d", &añoFin);
 
-        printf("INGRESANDO FECHA DE FIN:\n\n");
-        printf("DIA:");
-        scanf("%i", &diaFin);
+            if( diaInicio >= 1 && 
+                diaInicio <= 31 && 
+                diaFin >= 1 && 
+                diaFin <= 31 &&
+                mesInicio >= 1 &&
+                mesInicio <= 12 &&
+                mesFin >= 1 &&
+                mesFin <= 12 &&
+                añoInicio > 0 &&
+                añoFin > 0 ){
+                
+                error = 1;
+            }else{
+                printf("\nREVISE LAS FECHAS INGRESADAS E INTENTELO NUEVAMENTE. \n");
+            }
 
-        printf("\n");
 
-        printf("MES:");
-        scanf("%i", &mesFin);
-
-        printf("\n");
-
-        printf("AÑO:");
-        scanf("%i", &añoFin);
-
-
+        }
 
         while (!feof(pArchivo)){
-            //Ir comparando cada fecha del archivo con las fechas ingresadas. La fecha del archivo debe ser > a la fecha inicial y < a la final.
             fread(&prop, sizeof(propiedad), 1, pArchivo);
 
             int longitud = strlen(prop.fecha_de_ingreso);
@@ -164,14 +173,12 @@ if (opcionToLower == 'a'){
             char añoStruct[6];
 
             for (int i = 0; i < longitud; i++) {
-                //La idea es recorrer la fecha para separar los strings DD MM AA, convertirlos en numeros y compararlos con la fecha ingresada
                 char caracter = prop.fecha_de_ingreso[i];
 
                 if(caracter != '/'){
 
                     if(contadorDeBarras == 0){
 
-                        //Aca iria pusheando el caracter del dia para formar el string del dia. Dsps este string hay que convertirlo a numero
                         diaStruct[contadorAuxiliar] = caracter;
                         contadorAuxiliar++;
 
@@ -201,24 +208,88 @@ if (opcionToLower == 'a'){
             int mesStructNum = atoi(mesStruct);
             int añoStructNum = atoi(añoStruct);
 
-            if(añoStructNum >= añoInicio && añoStructNum <= añoFin){
-                printf("FECHA: %s\n", prop.fecha_de_ingreso);
-            }else if(mesStructNum >= mesInicio && mesStructNum <= mesFin){
-                printf("FECHA: %s\n", prop.fecha_de_ingreso);
-            }else if(diaStructNum >= diaInicio && diaStructNum <= diaFin){
-                printf("FECHA: %s\n", prop.fecha_de_ingreso);
+            if(añoStructNum > añoInicio && añoStructNum < añoFin){
+                
+                  printf(
+      "%.2d | %15s | %10s | %10s | %.2d | %.2d | %5.2f | %5.2f | %5.2f | %10s "
+      "| %10s | %10s | %20s | %d\n",
+      prop.id, prop.fecha_de_ingreso, prop.zona,
+      prop.ciudad, prop.dormitorios, prop.banos,
+      prop.superficie_total, prop.superficie_cubierta,
+      prop.precio, prop.moneda, prop.tipo,
+      prop.operacion, prop.fecha_de_salida,
+      prop.activo);
+                
+            }else if(añoStructNum == añoInicio){
+
+                if(mesStructNum > mesInicio){
+                      printf(
+      "%.2d | %15s | %10s | %10s | %.2d | %.2d | %5.2f | %5.2f | %5.2f | %10s "
+      "| %10s | %10s | %20s | %d\n",
+      prop.id, prop.fecha_de_ingreso, prop.zona,
+      prop.ciudad, prop.dormitorios, prop.banos,
+      prop.superficie_total, prop.superficie_cubierta,
+      prop.precio, prop.moneda, prop.tipo,
+      prop.operacion, prop.fecha_de_salida,
+      prop.activo);
+                }else if(mesStructNum == mesInicio){
+
+                    if(diaStructNum > diaInicio){
+                          printf(
+      "%.2d | %15s | %10s | %10s | %.2d | %.2d | %5.2f | %5.2f | %5.2f | %10s "
+      "| %10s | %10s | %20s | %d\n",
+      prop.id, prop.fecha_de_ingreso, prop.zona,
+      prop.ciudad, prop.dormitorios, prop.banos,
+      prop.superficie_total, prop.superficie_cubierta,
+      prop.precio, prop.moneda, prop.tipo,
+      prop.operacion, prop.fecha_de_salida,
+      prop.activo);
+                    }
+                    /*else if(diaStructNum == diaInicio){
+                        printf("LA FECHA ES IGUAL A LA FECHA DE INICIO:\n");
+                    }
+                    */
+
+                }
+
+
+            }else if(añoStructNum == añoFin){
+
+                if(mesStructNum > mesFin){
+                      printf(
+      "%.2d | %15s | %10s | %10s | %.2d | %.2d | %5.2f | %5.2f | %5.2f | %10s "
+      "| %10s | %10s | %20s | %d\n",
+      prop.id, prop.fecha_de_ingreso, prop.zona,
+      prop.ciudad, prop.dormitorios, prop.banos,
+      prop.superficie_total, prop.superficie_cubierta,
+      prop.precio, prop.moneda, prop.tipo,
+      prop.operacion, prop.fecha_de_salida,
+      prop.activo);
+                }else if(mesStructNum == mesFin){
+
+                    if(diaStructNum > diaFin){
+                          printf(
+      "%.2d | %15s | %10s | %10s | %.2d | %.2d | %5.2f | %5.2f | %5.2f | %10s "
+      "| %10s | %10s | %20s | %d\n",
+      prop.id, prop.fecha_de_ingreso, prop.zona,
+      prop.ciudad, prop.dormitorios, prop.banos,
+      prop.superficie_total, prop.superficie_cubierta,
+      prop.precio, prop.moneda, prop.tipo,
+      prop.operacion, prop.fecha_de_salida,
+      prop.activo);
+                    }
+                    /*else if(diaStructNum == diaFin){
+                        printf("LA FECHA ES IGUAL A LA FECHA DE FIN:\n");
+                    }
+                    */
+
+                }
             }
-
-
-            
         }
             
-    }else if (opcionToLower == 'e')
-    {
-        // obtenerSeleccion();
+    }else if (opcionToLower == 'e'){
         return;
     }
-  // submenuListar();
 }
 
 char submenuListar()
