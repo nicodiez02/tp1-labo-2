@@ -67,9 +67,7 @@ if (opcionToLower == 'a'){
 
     }else if (opcionToLower == 'c') {
         printf("\n¿Qué campo desea listar?\n");
-    //  scanf(" %s", campoAPrintear);
         scanf(" %29[^\n]", campoAPrintear);
-            //dnd guardar, //cant. caractares a leer,
     
         for (int i = 0; i < 14; i++) {
             if (strcmp(arrayComparativo[i], campoAPrintear) == 0) {

@@ -9,6 +9,15 @@
 #endif
 #include "./helpers/index.h"
 
+
+struct esIntEsChar
+{
+  int datoEntero;
+  char datoCadena[30];
+};
+
+
+
 void cargarArchivo(int *posicionColumnaActivo) {
   propiedad propiedad;
   FILE *pArchivo = fopen("propiedades.dat", "ab");
@@ -150,8 +159,6 @@ void seleccionoOperacion(propiedad *nuevaPropiedad) {
   }
 }
 
-
-
 void obtengoFechaActual(propiedad *nuevaPropiedad) {
   char fecha[11];
   time_t tiempo;
@@ -165,31 +172,102 @@ void obtengoFechaActual(propiedad *nuevaPropiedad) {
   strcpy((*nuevaPropiedad).fecha_de_ingreso, fecha);
 }
 
+bool validarTipoDato(struct esIntEsChar* nuevaValidacion,char queValidar[10]){
+
+    bool pasoLaValidacion = true;
+
+    if(strcmp(queValidar, "entero") == 0){
+
+      if(scanf("%i", &(nuevaValidacion->datoEntero)) != 1){
+        pasoLaValidacion = false;  
+      }
+      
+    }else if(strcmp(queValidar, "cadena") == 0){ 
+
+    }else{
+
+    }
+
+    //agregar mas validaciones de tipado si es necesario.
+    return pasoLaValidacion;
+
+}
+
 int alta(const char *campoAComprobar) {
   int error = 0;
-  int id;
+  int id, result;
   char inputId[10];
+  struct esIntEsChar validacion;
   propiedad nuevaPropiedad;
 
+    printf("Ingrese %s: ", campoAComprobar);
+    if (strcmp(campoAComprobar, "id") == 0) {
+        if(validarTipoDato(&validacion, "entero")){
+          
+          error = comprobarId(validacion.datoEntero);
 
-  //REVISAR VALIDACION DE ID. FALTA LA PARTE DE COMPROBAR SI SE INGRESO UNA CADENA O UN NUMOER
-  //LA VALIDACION DE SI ES DECIMAL YA ESTA ECHA
-  if (strcmp(campoAComprobar, "id") == 0) {
-    printf("Ingrese el id:");
-    scanf("%s", inputId);
-    if (strchr(inputId, ".") == NULL || strchr(inputId, ",") == NULL) { //verifico si es decimal
+          if(error == 0){
+            nuevaPropiedad.id = validacion.datoEntero;
+          }
+
+        }else{
+          error++;
+        }
+    } 
+
+    if (strcmp(campoAComprobar, "fecha de ingreso") == 0) {
+      int contador = 3;
+      char queEstoyValidando[10] = "dia";
+      char fechaIngreso[11] = "";
+      char dia[4] = "";
+      char mes[4] = "";
+      char año[6] = "";
       
-      id = atoi(inputId); //Validar retorno de atoi para ver si pudo convertir a entero, si no pudo es un string
-      error = comprobarId(id);
+      printf("\n\n");
+      while (contador >= 1)
+      {
+        //Falta validar si el dia es compatible con el mes
+        //EJ: Febrero tiene 28 dias, si ingresa 30/02 hay que detectar error
+        printf("Ingrese %s de ingreso:", queEstoyValidando);
+        if(validarTipoDato(&validacion, "entero")){
 
-      if(error == 0){
-        nuevaPropiedad.id = inputId;
+          if(strcmp(queEstoyValidando, "dia") == 0){
+            if(validacion.datoEntero >= 1 && validacion.datoEntero <= 31){
+              sprintf(dia, "%02d", validacion.datoEntero);
+              contador--;
+              strcpy(queEstoyValidando, "mes");
+            }else{
+              printf("\n- - - - - -  DIA INVALIDO - - - - - -\n\n");
+            }
+
+          }else if(strcmp(queEstoyValidando, "mes") == 0){
+            if(validacion.datoEntero >= 1 && validacion.datoEntero <= 12){
+              sprintf(mes, "%02d", validacion.datoEntero);
+              contador--;
+              strcpy(queEstoyValidando, "año");
+            }else{
+              printf("\n- - - - - -  MES INVALIDO - - - - - -\n\n");
+            }
+
+          }else if(strcmp(queEstoyValidando, "año") == 0){
+            if(validacion.datoEntero >= 1 && validacion.datoEntero <= 2023){
+              sprintf(año, "%d", validacion.datoEntero);
+              contador--;
+            }else{
+              printf("\n- - - - - -  AÑO INVALIDO - - - - - -\n\n");
+            }
+          }
+
+        }else{
+          printf("\n- - - - - -  SOLO SE ADMITEN NUMEROS - - - - - -\n\n");
+        }
+        while (getchar() != '\n');
       }
 
-    } else {
-      error = 1;
+      sprintf(fechaIngreso, "%s/%s/%s", dia, mes, año);
+      strcpy(nuevaPropiedad.fecha_de_ingreso, fechaIngreso);
+
     }
-  }
 
   if (strcmp(campoAComprobar, "zona") == 0) {
     printf("Ingrese la zona de la nueva propiedad (max. 30 caracteres):");
@@ -336,7 +414,7 @@ int main() {
     } else {
       printf(
           "------------------------- La opcion ingresada no es valida "
-          "-------------------------\n");
+          "-------------------------\n\n");
     }
   }
 
