@@ -1,3 +1,6 @@
+#ifndef defines
+#define defines
+
 typedef struct
 {
   int id;
@@ -15,3 +18,11 @@ typedef struct
   char fecha_de_salida[11];
   int activo;
 } propiedad;
+
+typedef struct {
+  int datoEntero;
+  char datoCadena[30];
+  float datoFlotante;
+} esIntEsChar;
+
+#endif
