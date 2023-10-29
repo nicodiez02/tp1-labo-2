@@ -65,7 +65,7 @@ void creoArchivoBinario(FILE **pArchivo) {
 }
 
 int comprobarId(int id) {
-  FILE *pArchivo;
+  FILE * pArchivo;
   pArchivo = fopen("propiedades.dat", "rb");
 
   propiedad otraPropiedad;
@@ -76,8 +76,8 @@ int comprobarId(int id) {
     printf("El numero ingresado no puede ser negativo, intentelo de nuevo\n");
     error = 1;
   } else {
-
     if (pArchivo != NULL) {
+      fseek(pArchivo,0,SEEK_END);
       fread(&otraPropiedad, sizeof(propiedad), 1, pArchivo);
       while (!feof(pArchivo)) {
         if (id == otraPropiedad.id) {
@@ -207,15 +207,112 @@ bool validarTipoDato(struct esIntEsChar* nuevaValidacion,char queValidar[10]){
     return pasoLaValidacion;
 }
 
-int alta(const char *campoAComprobar) {
+char pedirFechaValida(char * fechaa){
+  int contador = 3;
+  int mesEntero;
+  char queEstoyValidando[10] = "ano";
+  char fecha[11] = "";
+  char dia[4] = "";
+  char mes[4] = "";
+  char ano[6] = "";
+  struct esIntEsChar validacion;
+
+  while (contador >= 1){
+        printf("Ingrese %s valido:", queEstoyValidando);
+        if(validarTipoDato(&validacion, "entero")){
+          if(strcmp(queEstoyValidando, "ano") == 0){
+            if(validacion.datoEntero >= 1900 && validacion.datoEntero <= 2023){
+              sprintf(ano, "%d", validacion.datoEntero);
+              contador--;
+              strcpy(queEstoyValidando, "mes");
+            }else{
+              printf("\n- - - - - -  ANO INVALIDO - - - - - -\n\n");
+            }
+          } else if (strcmp(queEstoyValidando, "mes") == 0){
+            if(validacion.datoEntero >= 1 && validacion.datoEntero <= 12){
+              sprintf(mes, "%02d", validacion.datoEntero);
+              mesEntero = validacion.datoEntero;
+              contador--;
+              strcpy(queEstoyValidando, "dia");
+            }else{
+              printf("\n- - - - - -  MES INVALIDO - - - - - -\n\n");
+            }
+          } else if (strcmp(queEstoyValidando, "dia") == 0){
+            if (mesEntero == 4 || mesEntero == 6 || mesEntero == 9 || mesEntero == 11){
+              if (validacion.datoEntero >= 1 && validacion.datoEntero <= 30){
+                sprintf(dia, "%02d", validacion.datoEntero);
+                contador--;
+              } else {
+                printf("El mes seleccionado solo tiene 30 dias\n");
+              }
+            } else if (mesEntero == 2) {
+              if (validacion.datoEntero >= 1 && validacion.datoEntero <= 28){
+                sprintf(dia, "%02d", validacion.datoEntero);
+                contador--;
+              } else {
+                printf("El mes seleccionado solo tiene 28 dias\n");
+              }
+            } else {
+              if (validacion.datoEntero >= 1 && validacion.datoEntero <= 31){
+              sprintf(dia, "%02d", validacion.datoEntero);
+              contador--;
+              } else  {
+              printf("\n- - - - - -  DIA INVALIDO - - - - - -\n\n");
+              }
+            }
+          }
+
+        }else{
+          printf("\n- - - - - -  SOLO SE ADMITEN NUMEROS - - - - - -\n\n");
+        }
+        while (getchar() != '\n');
+      }
+      sprintf(fecha, "%s/%s/%s", dia, mes, ano);
+      strcpy(fechaa, fecha);
+}
+
+int compararFechas(struct tm fechaIng, struct tm fechaEgr){
+    if (fechaIng.tm_year > fechaEgr.tm_year) {
+        return -1; // fechaIng es mayor que fechaEgr
+    } else if (fechaIng.tm_year < fechaEgr.tm_year) {
+        return 1; // fechaIng es menor que fechaEgr
+    } else {
+        if (fechaIng.tm_mon > fechaEgr.tm_mon) {
+            return -1; // fechaIng es mayor que fechaEgr
+        } else if (fechaIng.tm_mon < fechaEgr.tm_mon) {
+            return 1; // fechaIng es menor que fechaEgr
+        } else {
+            if (fechaIng.tm_mday > fechaEgr.tm_mday) {
+                return -1; // fechaIng es mayor que fechaEgr
+            } else if (fechaIng.tm_mday < fechaEgr.tm_mday) {
+                return 1; // fechaIng es menor que fechaEgr
+            } else {
+                return 0; // fechaIng y fechaEgr son iguales
+            }
+        }
+    }
+  /* time_t tiempoIng, tiempoEgr;
+  tiempoIng = mktime(&fechaIng);
+  tiempoEgr = mktime(&fechaEgr);
+
+  if (tiempoIng > tiempoEgr){
+    return -1; //fecha Ingreso es mas reciente que fecha Egreso, por ende invalido
+  } else if(tiempoIng < tiempoEgr) {
+    return 1; //fecha Egreso es mas reciente que fecha Ingreso, por ende valido
+  } else {
+    return 0; //Son la misma fecha
+  } */
+}
+
+int alta(const char *campoAComprobar, propiedad * nuevaPropiedad) {
   int error = 0;
   int id, result;
   char inputId[10];
   struct esIntEsChar validacion;
-  propiedad nuevaPropiedad;
+  struct tm fechaIngreso, fechaEgreso;
 
     if (strcmp(campoAComprobar, "activo") == 0){
-      nuevaPropiedad.activo = 1;
+      (*nuevaPropiedad).activo = 1;
     } else {
       printf("Ingrese %s: ", campoAComprobar);
     }
@@ -226,7 +323,7 @@ int alta(const char *campoAComprobar) {
           error = comprobarId(validacion.datoEntero);
 
           if(error == 0){
-            nuevaPropiedad.id = validacion.datoEntero;
+            (*nuevaPropiedad).id = validacion.datoEntero;
           }
 
         }else{
@@ -296,13 +393,13 @@ int alta(const char *campoAComprobar) {
       }
 
       sprintf(fechaIngreso, "%s/%s/%s", dia, mes, ano);
-      strcpy(nuevaPropiedad.fecha_de_ingreso, fechaIngreso);
+      strcpy((*nuevaPropiedad).fecha_de_ingreso, fechaIngreso);
     }
 
   if (strcmp(campoAComprobar, "zona") == 0) {
     do{
       if(validarTipoDato(&validacion, "cadena")){
-      strcpy(nuevaPropiedad.zona, validacion.datoCadena);
+      strcpy((*nuevaPropiedad).zona, validacion.datoCadena);
       error = 0;
     } else {
       printf("Error, intentelo nuevamente\n");
@@ -314,7 +411,7 @@ int alta(const char *campoAComprobar) {
   if (strcmp(campoAComprobar, "ciudad") == 0) {
     do{
       if(validarTipoDato(&validacion, "cadena")){
-      strcpy(nuevaPropiedad.ciudad, validacion.datoCadena);
+      strcpy((*nuevaPropiedad).ciudad, validacion.datoCadena);
       error = 0;
     } else {
       printf("Error, intentelo nuevamente\n");
@@ -326,7 +423,7 @@ int alta(const char *campoAComprobar) {
   if (strcmp(campoAComprobar, "dormitorios") == 0) {
       if(validarTipoDato(&validacion, "entero")){
       error = 0;
-      nuevaPropiedad.dormitorios = validacion.datoEntero;
+      (*nuevaPropiedad).dormitorios = validacion.datoEntero;
       } else {
       error++;
       }
@@ -334,7 +431,7 @@ int alta(const char *campoAComprobar) {
   if (strcmp(campoAComprobar, "banos") == 0) {
     if(validarTipoDato(&validacion, "entero")){
       error = 0;
-      nuevaPropiedad.banos = validacion.datoEntero;
+      (*nuevaPropiedad).banos = validacion.datoEntero;
       } else {
       error++;
       }
@@ -342,7 +439,7 @@ int alta(const char *campoAComprobar) {
   if (strcmp(campoAComprobar, "superficie total") == 0) {
     if(validarTipoDato(&validacion, "flotante")){
       error = 0;
-      nuevaPropiedad.superficie_total = validacion.datoFlotante;
+      (*nuevaPropiedad).superficie_total = validacion.datoFlotante;
       } else {
       error++;
       }
@@ -350,7 +447,7 @@ int alta(const char *campoAComprobar) {
   if (strcmp(campoAComprobar, "superficie cubierta") == 0) {
     if(validarTipoDato(&validacion, "flotante")){
       error = 0;
-      nuevaPropiedad.superficie_cubierta = validacion.datoFlotante;
+      (*nuevaPropiedad).superficie_cubierta = validacion.datoFlotante;
       } else {
       error++;
       }
@@ -358,22 +455,58 @@ int alta(const char *campoAComprobar) {
   if (strcmp(campoAComprobar, "precio") == 0) {
     if(validarTipoDato(&validacion, "flotante")){
       error = 0;
-      nuevaPropiedad.precio = validacion.datoFlotante;
+      (*nuevaPropiedad).precio = validacion.datoFlotante;
       } else {
       error++;
       }
   }
   if (strcmp(campoAComprobar, "moneda") == 0) {
-    error = seleccionoMoneda(&nuevaPropiedad);
+    error = seleccionoMoneda(nuevaPropiedad);
   }
   if (strcmp(campoAComprobar, "tipo") == 0) {
-    error = seleccionoTipo(&nuevaPropiedad);
+    error = seleccionoTipo(nuevaPropiedad);
   }
   if (strcmp(campoAComprobar, "operacion") == 0) {
-    error = seleccionoOperacion(&nuevaPropiedad);
+    error = seleccionoOperacion(nuevaPropiedad);
   }
   if (strcmp(campoAComprobar, "fecha de salida") == 0) {
-    printf("%s", nuevaPropiedad.fecha_de_ingreso);
+    int diaIng, mesIng, anoIng;
+    int diaEgr, mesEgr, anoEgr;
+    char fecha_de_salida[11];
+    pedirFechaValida(fecha_de_salida);
+
+    if (sscanf(fecha_de_salida, "%d/%d/%d", &diaEgr, &mesEgr, &anoEgr) == 3){
+        printf("Dia: %d\n", diaEgr);
+        printf("Mes: %d\n", mesEgr);
+        printf("Ano: %d\n", anoEgr);
+    } else { printf("Error al analizar la fecha.\n"); }
+
+    if (sscanf((*nuevaPropiedad).fecha_de_ingreso, "%d/%d/%d", &diaIng, &mesIng, &anoIng) == 3){
+        printf("Dia: %d\n", diaIng);
+        printf("Mes: %d\n", mesIng);
+        printf("Ano: %d\n", anoIng);
+    } else { printf("Error al analizar la fecha.\n"); }
+
+    fechaIngreso.tm_year = anoIng; 
+    fechaIngreso.tm_mon = mesIng;           
+    fechaIngreso.tm_mday = diaIng;          
+
+    fechaEgreso.tm_year = anoEgr;  
+    fechaEgreso.tm_mon = mesEgr;            
+    fechaEgreso.tm_mday = diaEgr;           
+
+    int resultado = compararFechas(fechaIngreso, fechaEgreso);
+
+    if (resultado > 0) {
+        printf("Fecha valida\n");
+        strcpy((*nuevaPropiedad).fecha_de_salida, fecha_de_salida);
+    } else if (resultado < 0) {
+        printf("Fecha invalida\n");
+        error++;
+    } else {
+        printf("Fecha invalida por igualdad\n");
+        error++;
+    }
   }
   
   while (getchar() != '\n');  // Limpiar el búfer de entrada
@@ -424,6 +557,36 @@ propiedad nuevaPropiedad;
   }
 }
 */
+
+int escriboPropiedad(propiedad * nuevaProp){
+  /* printf("Id: %d\n",(*nuevaProp).id);
+  printf("Fecha de ingreso: %s\n",(*nuevaProp).fecha_de_ingreso);
+  printf("Zona: %s\n",(*nuevaProp).zona);
+  printf("Ciudad: %s\n",(*nuevaProp).ciudad);
+  printf("Dormitorios: %d\n",(*nuevaProp).dormitorios);
+  printf("Banos: %d\n",(*nuevaProp).banos);
+  printf("Superficie total: %f\n", (*nuevaProp).superficie_total);
+  printf("Superficie cubierta: %f\n", (*nuevaProp).superficie_cubierta);
+  printf("Precio: %f\n", (*nuevaProp).precio);
+  printf("Moneda: %s\n",(*nuevaProp).moneda);
+  printf("Tipo: %s\n",(*nuevaProp).tipo);
+  printf("Operacion: %s\n",(*nuevaProp).operacion);
+  printf("Fecha de salida: %s\n",(*nuevaProp).fecha_de_salida);
+  printf("Activo: %d",(*nuevaProp).activo ); */
+
+  FILE* pArchivo = fopen("propiedades.dat", "ab"); // Abre el archivo en modo de adición binaria
+
+    if (pArchivo != NULL) {
+      fwrite(nuevaProp, sizeof(nuevaProp), 1, pArchivo);
+      printf("Se supone que escribi");
+      return 0;
+    } else {
+      printf("Error en escriboPropiedad");
+      return -1;
+    }
+    
+    fclose(pArchivo);
+}
   
 
 
@@ -483,22 +646,25 @@ int main() {
       subMenuOpcionElegida = submenuListar();
       listoArchivoBinario(subMenuOpcionElegida);
     } else if (opcionElegidaMinuscula == 'c') {
-
       int error = 1;
       int numPropiedades = sizeof(propiedades) / sizeof(propiedades[0]);
-      for (int i = 0; i < numPropiedades; i++) {
+      propiedad persistePropiedad;
 
-        do 
-        { 
-          error = alta(propiedades[i]);
+      for (int i = 0; i < numPropiedades; i++) {
+        do { 
+          error = alta(propiedades[i], &persistePropiedad);
 
           if(error == 1){
             printf("Revise la informacion introducida para el campo %s y reintentelo nuevamente \n", propiedades[i]);
           }
-        }while (error == 1);
-        
-
+        } while (error == 1);
       }
+      if (escriboPropiedad(&persistePropiedad) == 0){
+        printf("Propiedad escrita correctamente");
+      } else {
+        printf("Error al escribir la nueva propiedad al archivo.\n");
+      }
+      
 
     } else if (opcionElegidaMinuscula == 'd') {
       bool terminarBuscar = 0;
