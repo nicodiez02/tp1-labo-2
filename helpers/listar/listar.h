@@ -1,7 +1,7 @@
 void listoArchivoBinario(char opcion){
 
-  int diaInicio,mesInicio,añoInicio;
-  int diaFin,mesFin,añoFin;
+  int diaInicio,mesInicio,anoInicio;
+  int diaFin,mesFin,anoFin;
 
   int encontrado = 0;  // Variable para rastrear si se encontró el campo
   char opcionToLower = tolower(opcion);
@@ -32,7 +32,7 @@ if (opcionToLower == 'a'){
 
         printf("\n");
       printf("%2s | %22s | %10s | %10s | %11s | %6s  | %15s| %18s | %7s | %10s | %10s | %10s | %21s | %5s\n",
-       "ID", "Fecha de Ingreso", "Zona", "Ciudad", "Dormitorios", "Baños", "Superficie Total",
+       "ID", "Fecha de Ingreso", "Zona", "Ciudad", "Dormitorios", "Banos", "Superficie Total",
        "Superficie Cubierta", "Precio", "Moneda", "Tipo", "Operación", "Fecha de Salida", "Activo");
       fread(&prop, sizeof(propiedad), 1, pArchivo);
       
@@ -85,7 +85,7 @@ if (opcionToLower == 'a'){
                     } else if (strcmp("dormitorios", campoAPrintear) == 0) {
                         printf("Dormitorios: %i\n", prop.dormitorios);
                     } else if (strcmp("banos", campoAPrintear) == 0) {
-                        printf("Baños: %i\n", prop.banos);
+                        printf("Banos: %i\n", prop.banos);
                     } else if (strcmp("superficie total", campoAPrintear) == 0) {
                         printf("Superficie Total: %.2f\n", prop.superficie_total);
                     } else if (strcmp("superficie cubierta", campoAPrintear) == 0) {
@@ -129,8 +129,8 @@ if (opcionToLower == 'a'){
             printf("MES:");
             scanf("%d", &mesInicio);
 
-            printf("AÑO:");
-            scanf("%d", &añoInicio);
+            printf("ANO:");
+            scanf("%d", &anoInicio);
 
             printf("\nINGRESANDO FECHA DE FIN:\n");
             printf("DIA:");
@@ -139,8 +139,8 @@ if (opcionToLower == 'a'){
             printf("MES:");
             scanf("%d", &mesFin);
 
-            printf("AÑO:");
-            scanf("%d", &añoFin);
+            printf("AnO:");
+            scanf("%d", &anoFin);
 
             if( diaInicio >= 1 && 
                 diaInicio <= 31 && 
@@ -150,8 +150,8 @@ if (opcionToLower == 'a'){
                 mesInicio <= 12 &&
                 mesFin >= 1 &&
                 mesFin <= 12 &&
-                añoInicio > 0 &&
-                añoFin > 0 ){
+                anoInicio > 0 &&
+                anoFin > 0 ){
                 
                 error = 1;
             }else{
@@ -169,7 +169,7 @@ if (opcionToLower == 'a'){
             int contadorAuxiliar = 0;
             char diaStruct[4];
             char mesStruct[4];
-            char añoStruct[6];
+            char anoStruct[6];
 
             for (int i = 0; i < longitud; i++) {
                 char caracter = prop.fecha_de_ingreso[i];
@@ -188,7 +188,7 @@ if (opcionToLower == 'a'){
 
                     }else{
 
-                        añoStruct[contadorAuxiliar] = caracter;
+                        anoStruct[contadorAuxiliar] = caracter;
                         contadorAuxiliar++;
 
                     }
@@ -201,13 +201,13 @@ if (opcionToLower == 'a'){
 
             diaStruct[3] = '\0'; 
             mesStruct[3] = '\0';
-            añoStruct[5] = '\0';
+            anoStruct[5] = '\0';
 
             int diaStructNum = atoi(diaStruct);
             int mesStructNum = atoi(mesStruct);
-            int añoStructNum = atoi(añoStruct);
+            int anoStructNum = atoi(anoStruct);
 
-            if(añoStructNum > añoInicio && añoStructNum < añoFin){
+            if(anoStructNum > anoInicio && anoStructNum < anoFin){
                 
                   printf(
       "%.2d | %15s | %10s | %10s | %.2d | %.2d | %5.2f | %5.2f | %5.2f | %10s "
@@ -219,7 +219,7 @@ if (opcionToLower == 'a'){
       prop.operacion, prop.fecha_de_salida,
       prop.activo);
                 
-            }else if(añoStructNum == añoInicio){
+            }else if(anoStructNum == anoInicio){
 
                 if(mesStructNum > mesInicio){
                       printf(
@@ -252,7 +252,7 @@ if (opcionToLower == 'a'){
                 }
 
 
-            }else if(añoStructNum == añoFin){
+            }else if(anoStructNum == anoFin){
 
                 if(mesStructNum > mesFin){
                       printf(
