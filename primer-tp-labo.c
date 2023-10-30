@@ -4,9 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#ifndef defines
-#define definesb
-#endif
+
 #include "./helpers/index.h"
 
 void cargarArchivo(int *posicionColumnaActivo) {
@@ -88,12 +86,10 @@ char obtenerSeleccion() {
   scanf(" %c", &opcionElegida);
 
   return opcionElegida;
-}
+};
 
 int main() {
   srand(time(NULL));
-  int continuar = 1;
-  int posicionColumnaActivo = 0;
   char *propiedades[] = {
       "id",
       "fecha de ingreso",
@@ -110,24 +106,32 @@ int main() {
       "fecha de salida",
       "activo"};
 
+  int continuar = 1;
+  int numPropiedades = sizeof(propiedades) / sizeof(propiedades[0]);
+  int idELiminar,posicionColumnaActivo,error;
+  bool terminarBuscar,continuarModificar;
+
   while (continuar) {
-    char opcionElegida, opcionElegidaMinuscula, subMenuOpcionElegida;
+    char opcionElegida,opcionElegidaMinuscula,subMenuOpcionElegida;
     FILE *pArchivo;
 
     opcionElegida = obtenerSeleccion();
-
     opcionElegidaMinuscula = tolower(opcionElegida);
 
     if (opcionElegidaMinuscula == 'a') {
+
+      posicionColumnaActivo = 0;
       creoArchivoBinario(&pArchivo);
       cargarArchivo(&posicionColumnaActivo);
 
     } else if (opcionElegidaMinuscula == 'b') {
+
       subMenuOpcionElegida = submenuListar();
       listoArchivoBinario(subMenuOpcionElegida);
+
     } else if (opcionElegidaMinuscula == 'c') {
-      int error = 1;
-      int numPropiedades = sizeof(propiedades) / sizeof(propiedades[0]);
+
+      error = 1;
       propiedad persistePropiedad;
 
       for (int i = 0; i < numPropiedades; i++) {
@@ -139,6 +143,7 @@ int main() {
           }
         } while (error == 1);
       }
+
       if (escriboPropiedad(&persistePropiedad) == 0) {
         printf("Propiedad escrita correctamente");
       } else {
@@ -146,21 +151,44 @@ int main() {
       }
 
     } else if (opcionElegidaMinuscula == 'd') {
-      bool terminarBuscar = 0;
-      while (!terminarBuscar) {
-        terminarBuscar = buscar();
-      }
-    } else if(opcionElegidaMinuscula == "f"){
+      terminarBuscar = 1;
+        while (terminarBuscar) {
+          terminarBuscar = buscar();
+        }
 
-    } else if (opcionElegidaMinuscula == 'q'){  // 'q' para salir
-    
+    } else if (opcionElegidaMinuscula == 'e') {
+      continuarModificar = CONTINUAR_MODIFICAR;
+      
+      while (continuarModificar) {
+        continuarModificar = modificar();
+      }
+    } else if (opcionElegidaMinuscula == 'f') {
+      pArchivo = fopen("propiedades.dat", "rb+");
+      error = 1;
+      idELiminar = 0;;
+
+      listoArchivoBinario('a');
+      while (error == 1)
+      {  
+        printf("\nIngrese el id del registro que desea dar de baja:");
+        
+        if(idValido(&pArchivo)){
+          error = 0;
+        }
+
+      }
+
+      bajalogica(pArchivo);
+      fclose(pArchivo);
+    } else if (opcionElegidaMinuscula == 'q') {  // 'q' para salir
+
       continuar = 0;  // Cambia continuar a 0 para salir del bucle.
     } else {
       printf(
           "------------------------- La opcion ingresada no es valida "
           "-------------------------\n\n");
     }
-  }
+  };
 
   return 0;
-}
+};

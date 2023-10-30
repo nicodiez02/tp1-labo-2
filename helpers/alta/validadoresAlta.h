@@ -1,8 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "../../defines.h"
 #ifndef validadoresAlta_h
 #define validadoresAlta_h
+
+// validar que no meta superficies en cero
+// validar que superficie cubierta sea menor o igual a la total
+// validar que banos y dormis no sean letras
+
+// ver por que rompe con loop infinito si pongo letra en bano y dormi
 
 bool validarTipoDato(esIntEsChar *nuevaValidacion, char queValidar[10]) {
   bool pasoLaValidacion = true;
@@ -13,6 +21,7 @@ bool validarTipoDato(esIntEsChar *nuevaValidacion, char queValidar[10]) {
     }
   } else if (strcmp(queValidar, "cadena") == 0) {
     scanf("%s", nuevaValidacion->datoCadena);
+    
     int num;
     if (sscanf(nuevaValidacion->datoCadena, "%d", &num) == 1) {
       pasoLaValidacion = false;
@@ -25,7 +34,7 @@ bool validarTipoDato(esIntEsChar *nuevaValidacion, char queValidar[10]) {
 
   // agregar mas validaciones de tipado si es necesario.
   return pasoLaValidacion;
-}
+};
 
 int comprobarId(int id) {
   FILE *pArchivo;
@@ -33,27 +42,18 @@ int comprobarId(int id) {
 
   propiedad otraPropiedad;
   int error = 0;
-  int flag = 0;
 
   if (id < 0) {
     printf("El numero ingresado no puede ser negativo, intentelo de nuevo\n");
     error = 1;
   } else {
     if (pArchivo != NULL) {
-      fseek(pArchivo, 0, SEEK_END);
+      fseek(pArchivo, (id - 1) * sizeof(propiedad), SEEK_SET);
       fread(&otraPropiedad, sizeof(propiedad), 1, pArchivo);
-      while (!feof(pArchivo)) {
-        if (id == otraPropiedad.id) {
-          flag = 1;
-        }
-        fread(&otraPropiedad, sizeof(propiedad), 1, pArchivo);
-      }
-
-      if (flag == 1) {
+      if (id == otraPropiedad.id && otraPropiedad.id != 0) {
         printf("El numero ingresado ya existe, intentelo de nuevo\n");
         error = 1;
       }
-
     } else {
       printf("Error en la apertura del archivo");
       exit(-1);
@@ -61,7 +61,7 @@ int comprobarId(int id) {
   }
 
   return error;
-}
+};
 
 void pedirFechaValida(char *fechaa) {
   int contador = 3;
@@ -123,7 +123,7 @@ void pedirFechaValida(char *fechaa) {
   }
   sprintf(fecha, "%s/%s/%s", dia, mes, ano);
   strcpy(fechaa, fecha);
-}
+};
 
 int compararFechas(struct tm fechaIng, struct tm fechaEgr) {
   if (fechaIng.tm_year > fechaEgr.tm_year) {
