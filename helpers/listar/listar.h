@@ -88,23 +88,19 @@ if (opcionToLower == 'a'){
 
             printf("\nINGRESANDO FECHA DE INICIO:\n");
             printf("DIA:");
-            scanf("%d", &diaInicio);
-
+            scanf("%2d", &diaInicio);
             printf("MES:");
-            scanf("%d", &mesInicio);
-
+            scanf("%2d", &mesInicio);
             printf("ANO:");
-            scanf("%d", &anoInicio);
+            scanf("%4d", &anoInicio);
 
             printf("\nINGRESANDO FECHA DE FIN:\n");
             printf("DIA:");
-            scanf("%d", &diaFin);
-
+            scanf("%2d", &diaFin);
             printf("MES:");
-            scanf("%d", &mesFin);
-
-            printf("AnO:");
-            scanf("%d", &anoFin);
+            scanf("%2d", &mesFin);
+            printf("ANO:");
+            scanf("%4d", &anoFin);
 
             if( diaInicio >= 1 && 
                 diaInicio <= 31 && 
@@ -125,131 +121,45 @@ if (opcionToLower == 'a'){
 
         }
 
-        while (!feof(pArchivo)){
-            fread(&prop, sizeof(propiedad), 1, pArchivo);
+    while (fread(&prop, sizeof(propiedad), 1, pArchivo) == 1) {
+        struct tm fechaPropiedad_tm;
 
-            int longitud = strlen(prop.fecha_de_ingreso);
-            int contadorDeBarras = 0;
-            int contadorAuxiliar = 0;
-            char diaStruct[4];
-            char mesStruct[4];
-            char anoStruct[6];
-
-            for (int i = 0; i < longitud; i++) {
-                char caracter = prop.fecha_de_ingreso[i];
-
-                if(caracter != '/'){
-
-                    if(contadorDeBarras == 0){
-
-                        diaStruct[contadorAuxiliar] = caracter;
-                        contadorAuxiliar++;
-
-                    }else if(contadorDeBarras == 1){
-
-                        mesStruct[contadorAuxiliar] = caracter;
-                        contadorAuxiliar++;
-
-                    }else{
-
-                        anoStruct[contadorAuxiliar] = caracter;
-                        contadorAuxiliar++;
-
-                    }
-                }else{
-                    contadorAuxiliar = 0;
-                    contadorDeBarras++;
-                }
-            }
-
-
-            diaStruct[3] = '\0'; 
-            mesStruct[3] = '\0';
-            anoStruct[5] = '\0';
-
-            int diaStructNum = atoi(diaStruct);
-            int mesStructNum = atoi(mesStruct);
-            int anoStructNum = atoi(anoStruct);
-
-            if(anoStructNum > anoInicio && anoStructNum < anoFin){
-                
-                  printf(
-      "%.2d | %15s | %10s | %10s | %.2d | %.2d | %5.2f | %5.2f | %5.2f | %10s "
-      "| %10s | %10s | %20s | %d\n",
-      prop.id, prop.fecha_de_ingreso, prop.zona,
-      prop.ciudad, prop.dormitorios, prop.banos,
-      prop.superficie_total, prop.superficie_cubierta,
-      prop.precio, prop.moneda, prop.tipo,
-      prop.operacion, prop.fecha_de_salida,
-      prop.activo);
-                
-            }else if(anoStructNum == anoInicio){
-
-                if(mesStructNum > mesInicio){
-                      printf(
-      "%.2d | %15s | %10s | %10s | %.2d | %.2d | %5.2f | %5.2f | %5.2f | %10s "
-      "| %10s | %10s | %20s | %d\n",
-      prop.id, prop.fecha_de_ingreso, prop.zona,
-      prop.ciudad, prop.dormitorios, prop.banos,
-      prop.superficie_total, prop.superficie_cubierta,
-      prop.precio, prop.moneda, prop.tipo,
-      prop.operacion, prop.fecha_de_salida,
-      prop.activo);
-                }else if(mesStructNum == mesInicio){
-
-                    if(diaStructNum > diaInicio){
-                          printf(
-      "%.2d | %15s | %10s | %10s | %.2d | %.2d | %5.2f | %5.2f | %5.2f | %10s "
-      "| %10s | %10s | %20s | %d\n",
-      prop.id, prop.fecha_de_ingreso, prop.zona,
-      prop.ciudad, prop.dormitorios, prop.banos,
-      prop.superficie_total, prop.superficie_cubierta,
-      prop.precio, prop.moneda, prop.tipo,
-      prop.operacion, prop.fecha_de_salida,
-      prop.activo);
-                    }
-                    /*else if(diaStructNum == diaInicio){
-                        printf("LA FECHA ES IGUAL A LA FECHA DE INICIO:\n");
-                    }
-                    */
-
-                }
-
-
-            }else if(anoStructNum == anoFin){
-
-                if(mesStructNum > mesFin){
-                      printf(
-      "%.2d | %15s | %10s | %10s | %.2d | %.2d | %5.2f | %5.2f | %5.2f | %10s "
-      "| %10s | %10s | %20s | %d\n",
-      prop.id, prop.fecha_de_ingreso, prop.zona,
-      prop.ciudad, prop.dormitorios, prop.banos,
-      prop.superficie_total, prop.superficie_cubierta,
-      prop.precio, prop.moneda, prop.tipo,
-      prop.operacion, prop.fecha_de_salida,
-      prop.activo);
-                }else if(mesStructNum == mesFin){
-
-                    if(diaStructNum > diaFin){
-                          printf(
-      "%.2d | %15s | %10s | %10s | %.2d | %.2d | %5.2f | %5.2f | %5.2f | %10s "
-      "| %10s | %10s | %20s | %d\n",
-      prop.id, prop.fecha_de_ingreso, prop.zona,
-      prop.ciudad, prop.dormitorios, prop.banos,
-      prop.superficie_total, prop.superficie_cubierta,
-      prop.precio, prop.moneda, prop.tipo,
-      prop.operacion, prop.fecha_de_salida,
-      prop.activo);
-                    }
-                    /*else if(diaStructNum == diaFin){
-                        printf("LA FECHA ES IGUAL A LA FECHA DE FIN:\n");
-                    }
-                    */
-
-                }
-            }
+        // Convierte la fecha de propiedad en una estructura tm
+        if (strptime(prop.fecha_de_ingreso, "%d/%m/%Y", &fechaPropiedad_tm) == NULL) {
+            printf("Error al analizar la fecha de propiedad.\n");
+            continue; // Continuar con la siguiente propiedad
         }
-            
+
+        // Convierte la fecha de propiedad a timestamp (time_t)
+        time_t fechaPropiedad_timestamp = mktime(&fechaPropiedad_tm);
+
+        // Convierte las fechas de inicio y fin a timestamp
+        struct tm fechaInicio_tm = {0};
+        fechaInicio_tm.tm_year = anoInicio - 1900;
+        fechaInicio_tm.tm_mon = mesInicio - 1;
+        fechaInicio_tm.tm_mday = diaInicio;
+
+        struct tm fechaFin_tm = {0};
+        fechaFin_tm.tm_year = anoFin - 1900;
+        fechaFin_tm.tm_mon = mesFin - 1;
+        fechaFin_tm.tm_mday = diaFin;
+
+        time_t fechaInicio_timestamp = mktime(&fechaInicio_tm);
+        time_t fechaFin_timestamp = mktime(&fechaFin_tm);
+
+        if (fechaPropiedad_timestamp >= fechaInicio_timestamp &&
+            fechaPropiedad_timestamp <= fechaFin_timestamp) {
+            // La fecha de la propiedad está dentro del rango
+            // Imprime los detalles de la propiedad
+            printf("%.2d | %15s | %10s | %10s | %.2d | %.2d | %5.2f | %5.2f | %5.2f | %10s | %10s | %10s | %20s | %d\n",
+                prop.id, prop.fecha_de_ingreso, prop.zona,
+                prop.ciudad, prop.dormitorios, prop.banos,
+                prop.superficie_total, prop.superficie_cubierta,
+                prop.precio, prop.moneda, prop.tipo,
+                prop.operacion, prop.fecha_de_salida,
+                prop.activo);
+        }
+    }    
     }else if (opcionToLower == 'e'){
         return;
     }

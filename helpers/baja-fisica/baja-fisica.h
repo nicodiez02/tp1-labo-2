@@ -1,23 +1,28 @@
-void bajaFisica() {
+void bajaFisica(char *nombreArchivo) {
     FILE *pArchivo = fopen("propiedades.dat", "rb+");
     if (pArchivo == NULL) {
         perror("Error al abrir propiedades.dat");
+        return;
     }
 
     FILE *pArchivoCsv;
-    char nombreArchivo[50];
     time_t tiempo = time(NULL);
     struct tm *tm_info = localtime(&tiempo);
-    strftime(nombreArchivo, sizeof(nombreArchivo), "propiedades_bajas_%d-%m-%Y.xyz", tm_info);
+    char nombreArchivoCsv[50];
+    strftime(nombreArchivoCsv, sizeof(nombreArchivoCsv), "propiedades_bajas_%d-%m-%Y.xyz", tm_info);
 
-    pArchivoCsv = fopen(nombreArchivo, "w");
+    pArchivoCsv = fopen(nombreArchivoCsv, "w");
     if (pArchivoCsv == NULL) {
         perror("Error al abrir archivo de pArchivoCsv");
+        fclose(pArchivo);
+        return;
     }
 
     propiedad prop;
     int modificado = 0;
-    
+
+    propiedad prop_temp = {0};  // Inicializa todos los campos en 0 o cadenas vacías
+
     while (fread(&prop, sizeof(propiedad), 1, pArchivo) == 1) {
         if (prop.activo == 0) {
             fprintf(pArchivoCsv, "%.2d | %11s | %21s | %14s | %.1d | %.1d | %5f | %5f | %8f | %3s | %10s | %10s | %1s | %d\n",
@@ -26,34 +31,20 @@ void bajaFisica() {
                prop.tipo, prop.operacion, prop.fecha_de_salida, prop.activo);
 
             fseek(pArchivo, -sizeof(propiedad), SEEK_CUR);
-
-            prop.id = 0;
-            strcpy(prop.fecha_de_ingreso, "0");
-            strcpy(prop.zona, "0");
-            strcpy(prop.ciudad, "0");
-            prop.dormitorios = 0;
-            prop.banos = 0;
-            prop.superficie_total = 0.0;
-            prop.superficie_cubierta = 0.0;
-            prop.precio = 0.0;
-            strcpy(prop.moneda, "0");
-            strcpy(prop.tipo, "0");
-            strcpy(prop.operacion, "0");
-            strcpy(prop.fecha_de_salida, "0");
             
-            fwrite(&prop, sizeof(propiedad), 1, pArchivo);
+            fwrite(&prop_temp, sizeof(propiedad), 1, pArchivo);  // Sobreescribe con valores iniciales
             modificado = 1;
         }
     }
-
 
     fclose(pArchivo);
     fclose(pArchivoCsv);
 
     if (modificado) {
-        printf("Se han guardado las propiedades inactivas en %s y se han actualizado los registros en propiedades.dat.\n", nombreArchivo);
+        printf("Se han guardado las propiedades inactivas en %s y se han actualizado los registros en propiedades.dat.\n", nombreArchivoCsv);
+        // Copiamos el nombre del archivo en la cadena proporcionada.
+        strcpy(nombreArchivo, nombreArchivoCsv);
     } else {
         printf("No se encontraron propiedades inactivas.\n");
     }
-
 }

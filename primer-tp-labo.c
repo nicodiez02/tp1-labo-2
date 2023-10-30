@@ -85,6 +85,7 @@ int main() {
   int continuar = 1;
   int numPropiedades = sizeof(propiedades) / sizeof(propiedades[0]);
   int idELiminar,posicionColumnaActivo,error;
+  char nombreArchivoCsv[50];
   bool terminarBuscar,continuarModificar;
 
   while (continuar) {
@@ -156,11 +157,27 @@ int main() {
 
       bajalogica(pArchivo);
       fclose(pArchivo);
-    } else if (opcionElegidaMinuscula == 'q') {  // 'q' para salir
+    }else if(opcionElegidaMinuscula == 'g'){
+      
+      bajaFisica(nombreArchivoCsv);  
 
-      continuar = 0;  // Cambia continuar a 0 para salir del bucle.
-    } else if(opcionElegidaMinuscula == 'g'){
-      bajaFisica();  
+    }else if(opcionElegidaMinuscula == 'h'){
+        FILE *pArchivo = fopen(nombreArchivoCsv, "r");
+
+        if (pArchivo == NULL) {
+            perror("Error al abrir el archivo XYZ");
+        }
+
+        char linea[500]; 
+
+        while (fgets(linea, sizeof(linea), pArchivo) != NULL) {
+            printf("%s", linea);
+        }
+
+        fclose(pArchivo);
+    }else if (opcionElegidaMinuscula == 'q') {
+      continuar = 0;  
+    
     }else {
       printf(
           "------------------------- La opcion ingresada no es valida "
