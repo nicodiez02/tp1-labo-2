@@ -6,22 +6,6 @@ void listoArchivoBinario(char opcion){
   int encontrado = 0;  // Variable para rastrear si se encontró el campo
   char opcionToLower = tolower(opcion);
   char campoAPrintear[30];  // Declarar como un arreglo de caracteres
-  char *arrayComparativo[] = {
-    "id",
-   "fecha de ingreso",
-   "zona",
-   "ciudad",
-   "dormitorios",
-   "banos",
-   "superficie total",
-   "superficie cubierta",
-   "precio",
-   "moneda",
-   "tipo",
-   "operacion",
-   "fecha de salida",
-   "activo"
-  };
 
   FILE *pArchivo;
   propiedad prop;
@@ -51,66 +35,49 @@ if (opcionToLower == 'a'){
     getchar();
     }else if(opcionToLower == 'b'){
       
-      printf("ACTIVO\n");
-      printf("------\n");
 
       while (!feof(pArchivo)){
         fread(&prop, sizeof(propiedad), 1, pArchivo);
-        printf("%d\n", prop.activo);
+
+        if(prop.activo == 1){
+            printf("%.2d | %11s | %21s | %14s | %.1d | %.1d | %5f | %5f | %8f | %3s | %10s | %10s | %1s | %d\n",
+               prop.id, prop.fecha_de_ingreso, prop.zona, prop.ciudad, prop.dormitorios,
+               prop.banos, prop.superficie_total, prop.superficie_cubierta, prop.precio, prop.moneda,
+               prop.tipo, prop.operacion, prop.fecha_de_salida, prop.activo);
+        }
       }
 
       return;
 
 
     }else if (opcionToLower == 'c') {
-        printf("\n¿Qué campo desea listar?\n");
-        scanf(" %29[^\n]", campoAPrintear);
-    
-        for (int i = 0; i < 14; i++) {
-            if (strcmp(arrayComparativo[i], campoAPrintear) == 0) {
-                while (!feof(pArchivo)) {
-                    fread(&prop, sizeof(propiedad), 1, pArchivo);
+        char nombrePropiedad[15] = "";
+        printf("\n¿Qué tipo de propiedad desea listar? - Tipee una opción (A, B, C)\n");
+        printf("A) Departamento\nB) PH\nC) Casa\n");
+        scanf(" %1[^\n]", campoAPrintear);  
+        char opcion = tolower(campoAPrintear[0]); 
 
-                    if (strcmp("id", campoAPrintear) == 0) {
-                        printf("ID: %i\n", prop.id);
-                    } else if (strcmp("fecha de ingreso", campoAPrintear) == 0) {
-                        printf("Fecha de Ingreso: %s\n", prop.fecha_de_ingreso);
-                    } else if (strcmp("zona", campoAPrintear) == 0) {
-                        printf("Zona: %s\n", prop.zona);
-                    } else if (strcmp("ciudad", campoAPrintear) == 0) {
-                        printf("Ciudad: %s\n", prop.ciudad);
-                    } else if (strcmp("dormitorios", campoAPrintear) == 0) {
-                        printf("Dormitorios: %i\n", prop.dormitorios);
-                    } else if (strcmp("banos", campoAPrintear) == 0) {
-                        printf("Banos: %i\n", prop.banos);
-                    } else if (strcmp("superficie total", campoAPrintear) == 0) {
-                        printf("Superficie Total: %.2f\n", prop.superficie_total);
-                    } else if (strcmp("superficie cubierta", campoAPrintear) == 0) {
-                        printf("Superficie Cubierta: %.2f\n", prop.superficie_cubierta);
-                    } else if (strcmp("precio", campoAPrintear) == 0) {
-                        printf("Precio: %.2f\n", prop.precio);
-                    } else if (strcmp("moneda", campoAPrintear) == 0) {
-                        printf("Moneda: %s\n", prop.moneda);
-                    } else if (strcmp("tipo", campoAPrintear) == 0) {
-                        printf("Tipo: %s\n", prop.tipo);
-                    } else if (strcmp("operacion", campoAPrintear) == 0) {
-                        printf("Operación: %s\n", prop.operacion);
-                    } else if (strcmp("fecha de salida", campoAPrintear) == 0) {
-                        printf("Fecha de Salida: %s\n", prop.fecha_de_salida);
-                    } else if (strcmp("activo", campoAPrintear) == 0) {
-                        printf("Activo: %i\n", prop.activo);
-                    }
-                }
-                encontrado = 1;
-                break;  // Terminar el bucle una vez que se encuentre el campo
+        if (opcion == 'a') {
+            strcpy(nombrePropiedad, "Departamento");
+        } else if (opcion == 'b') {
+            strcpy(nombrePropiedad, "PH");
+        } else if (opcion == 'c') {
+            strcpy(nombrePropiedad, "Casa");
+        } else {
+            printf("Opción no válida\n");
+        }
+
+        while (fread(&prop, sizeof(propiedad), 1, pArchivo) == 1) {
+            if (strcmp(prop.tipo, nombrePropiedad) == 0) {
+                printf("%.2d | %11s | %21s | %14s | %.1d | %.1d | %5f | %5f | %8f | %3s | %10s | %10s | %1s | %d\n",
+                    prop.id, prop.fecha_de_ingreso, prop.zona, prop.ciudad, prop.dormitorios,
+                    prop.banos, prop.superficie_total, prop.superficie_cubierta, prop.precio, prop.moneda,
+                    prop.tipo, prop.operacion, prop.fecha_de_salida, prop.activo);
             }
         }
 
 
-        if (!encontrado) {
-            printf("El campo '%s' no fue encontrado.\n", campoAPrintear);
-            return;
-        }
+
     }else if(opcionToLower == 'd'){
 
         //falta validar como ingresa la fecha, tiene que ser formato 00/00/0000
