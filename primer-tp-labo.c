@@ -10,7 +10,24 @@
 #include "./helpers/index.h"
 
 void cargarArchivo(int *posicionColumnaActivo) {
+  propiedad datos[15] = {
+    {1,"23/12/2019","Capital Federal","San Cristobal",7,2,140.0,140.0,153000.0,"USD","Departamento","Venta","6/2/2020",1},
+    {2,"21/11/2019","Capital Federal","Boedo",1,2,70,58,159000,"USD","PH","Venta","05/01/20",1},
+    {3,"01/11/19","Capital Federal","Palermo",1,1,45,45,125000,"USD","Departamento","Venta",1},
+    {4,"23/12/2019","Capital Federal","Palermo",1,1,85,50,295000,"PESOS","PH","Alquiler","01/04/20",1},
+    {5,"11/03/20","Bs.As. G.B.A Zona Sur","La Plata",1,1,50,35,40000,"USD","Casa","Venta","24/7/2021",1},
+    {6,"01/11/19","Capital Federal","Villa Crespo",1,1,56,56,150000,"USD","PH","Venta","09/02/20",1},
+    {7,"31/10/2019","Capital Federal","Villa Crespo",1,1,70,70,159500,"USD","Departamento","Venta",1},
+    {8,"31/10/2019","Capital Federal","Villa Crespo",1,1,70,70,159500,"PESOS","PH","Alquiler","08/02/20",1},
+    {9,"23/12/2019","Capital Federal","Parque Patricios",1,1,45,37,2400,00,"USD","Departamento","Alquiler temporal","01/04/20",1},
+    {10,"23/12/2019","Capital Federal","Parque Patricios",1,1,45,37,89000,"USD","Casa","Venta","05/01/20",1},
+    {11,"07/12/19","Capital Federal","Villa Pueyrredón",1,2,66,49,170000,"USD","PH","Venta","16/3/2020",1},
+    {12,"26/10/2019","Capital Federal","Boedo",1,1,68,59,149000,"PESOS","Departamento","Alquiler",1},
+    {13,"19/12/2019","Capital Federal","Boedo",1,1,50,44,115000,"USD","Departamento","Venta","28/3/2020",1},
+    {14,"30/11/2019","Bs.As. G.B.A. Zona Norte","Pilar",1,1,50,35,145000,00,"PESOS","PH","Alquiler",1}
+  };
   propiedad propiedad;
+
   FILE *pArchivo = fopen("propiedades.dat", "ab");
 
   if (pArchivo != NULL) {
@@ -23,18 +40,18 @@ void cargarArchivo(int *posicionColumnaActivo) {
       sprintf(fecha, "%02d/%02d/%04d", dia, mes, ano);
 
       propiedad.id = i;
-      strcpy(propiedad.zona, "zona");
-      strcpy(propiedad.fecha_de_ingreso, fecha);
-      strcpy(propiedad.ciudad, "ciudad");
-      propiedad.dormitorios = i;
-      propiedad.banos = i;
-      propiedad.superficie_cubierta = i;
-      propiedad.superficie_total = i;
-      propiedad.precio = i;
-      strcpy(propiedad.moneda, "moneda");
-      strcpy(propiedad.tipo, "Departamento");
-      strcpy(propiedad.operacion, "operacion");
-      strcpy(propiedad.fecha_de_salida, "08/11/2002");
+      strcpy(propiedad.zona, datos[i].zona);
+      strcpy(propiedad.fecha_de_ingreso, datos[i].fecha_de_ingreso);
+      strcpy(propiedad.ciudad, datos[i].ciudad);
+      propiedad.dormitorios = datos[i].dormitorios;
+      propiedad.banos = datos[i].banos;
+      propiedad.superficie_cubierta = datos[i].superficie_cubierta;
+      propiedad.superficie_total = datos[i].superficie_total;
+      propiedad.precio = datos[i].precio;
+      strcpy(propiedad.moneda, datos[i].moneda);
+      strcpy(propiedad.tipo, datos[i].tipo);
+      strcpy(propiedad.operacion, datos[i].operacion);
+      strcpy(propiedad.fecha_de_salida, datos[i].fecha_de_salida);
       propiedad.activo = 1;
 
       if (i == 0) {
@@ -133,8 +150,10 @@ int main() {
       while (!terminarBuscar) {
         terminarBuscar = buscar();
       }
-    } else if (opcionElegidaMinuscula == 'q')  // 'q' para salir
-    {
+    } else if(opcionElegidaMinuscula == "f"){
+
+    } else if (opcionElegidaMinuscula == 'q'){  // 'q' para salir
+    
       continuar = 0;  // Cambia continuar a 0 para salir del bucle.
     } else {
       printf(
