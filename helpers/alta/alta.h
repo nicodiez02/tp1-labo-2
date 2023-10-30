@@ -285,26 +285,43 @@ int alta(const char *campoAComprobar, propiedad *nuevaPropiedad) {
 }
 
 int escriboPropiedad(propiedad *nuevaProp) {
-  printf("Id: %d\n", (*nuevaProp).id);
-  printf("Fecha de ingreso: %s\n", (*nuevaProp).fecha_de_ingreso);
-  printf("Zona: %s\n", (*nuevaProp).zona);
-  printf("Ciudad: %s\n", (*nuevaProp).ciudad);
-  printf("Dormitorios: %d\n", (*nuevaProp).dormitorios);
-  printf("Banos: %d\n", (*nuevaProp).banos);
-  printf("Superficie total: %f\n", (*nuevaProp).superficie_total);
-  printf("Superficie cubierta: %f\n", (*nuevaProp).superficie_cubierta);
-  printf("Precio: %f\n", (*nuevaProp).precio);
-  printf("Moneda: %s\n", (*nuevaProp).moneda);
-  printf("Tipo: %s\n", (*nuevaProp).tipo);
-  printf("Operacion: %s\n", (*nuevaProp).operacion);
-  printf("Fecha de salida: %s\n", (*nuevaProp).fecha_de_salida);
-  printf("Activo: %d", (*nuevaProp).activo);
+  int numeroRegistros;
+  propiedad propiedadVacia = {
+      0,
+      '0',
+      '0',
+      '0',
+      0,
+      0,
+      0,
+      0,
+      0,
+      '0',
+      '0',
+      '0',
+      '0',
+      0,
+  };
 
-  FILE *pArchivo = fopen("propiedades.dat", "a+b");  // Abre el archivo en modo de adición binaria
+  FILE *pArchivo = fopen("propiedades.dat", "r+b");  // Abre el archivo en modo de adición binaria
 
   if (pArchivo != NULL) {
-    fwrite(nuevaProp, sizeof(propiedad), 1, pArchivo);
-    printf("Se supone que escribi");
+    fseek(pArchivo, 0, SEEK_END);
+    numeroRegistros = ftell(pArchivo) / sizeof(propiedad);
+    if (numeroRegistros < nuevaProp->id) {
+      int cantidadACrear = nuevaProp->id - numeroRegistros;
+      printf("%i", cantidadACrear);
+
+      for (int i = 1; i < cantidadACrear; i++) {
+        fwrite(&propiedadVacia, sizeof(propiedad), 1, pArchivo);
+      }
+
+      fwrite(nuevaProp, sizeof(propiedad), 1, pArchivo);
+    } else {
+      fseek(pArchivo, 0, SEEK_SET);
+      fseek(pArchivo, ((nuevaProp->id) - 1) * sizeof(propiedad), SEEK_SET);
+      fwrite(nuevaProp, sizeof(propiedad), 1, pArchivo);
+    }
     fclose(pArchivo);
     return 0;
   } else {
