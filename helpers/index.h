@@ -1,4 +1,3 @@
-#include "../defines.h"
 #include "./alta/index.h"
 #include "./buscar/index.h"
 #include "./funcionesFILE/index.h"

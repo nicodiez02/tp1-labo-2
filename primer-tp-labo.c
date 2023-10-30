@@ -30,33 +30,7 @@ void cargarArchivo(int *posicionColumnaActivo) {
 
   if (pArchivo != NULL) {
     for (int i = 0; i < 14; i++) {
-      int dia = (rand() % 28) + 1;
-      int mes = (rand() % 12) + 1;
-      int ano = (rand() % 23) + 2000;
-      char fecha[12];
-
-      sprintf(fecha, "%02d/%02d/%04d", dia, mes, ano);
-
-      propiedad.id = datos[i].id;
-      strcpy(propiedad.zona, datos[i].zona);
-      strcpy(propiedad.fecha_de_ingreso, datos[i].fecha_de_ingreso);
-      strcpy(propiedad.ciudad, datos[i].ciudad);
-      propiedad.dormitorios = datos[i].dormitorios;
-      propiedad.banos = datos[i].banos;
-      propiedad.superficie_cubierta = datos[i].superficie_cubierta;
-      propiedad.superficie_total = datos[i].superficie_total;
-      propiedad.precio = datos[i].precio;
-      strcpy(propiedad.moneda, datos[i].moneda);
-      strcpy(propiedad.tipo, datos[i].tipo);
-      strcpy(propiedad.operacion, datos[i].operacion);
-      strcpy(propiedad.fecha_de_salida, datos[i].fecha_de_salida);
-      propiedad.activo = 1;
-
-      if (i == 0) {
-        (*posicionColumnaActivo) = ftell(pArchivo);
-      }
-
-      fwrite(&propiedad, sizeof(propiedad), 1, pArchivo);
+      fwrite(&datos[i], sizeof(propiedad), 1, pArchivo);
     }
     fclose(pArchivo);
   }
