@@ -6,4 +6,5 @@
 #include "./preguntarContinuar/index.h"
 #include "./printPropiedad/index.h"
 #include "./baja-logica/index.h"
+#include "./baja-fisica/index.h"
 

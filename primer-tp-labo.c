@@ -15,16 +15,18 @@ void cargarArchivo(int *posicionColumnaActivo) {
     {4,"23/12/2019","Capital Federal","Palermo",1,1,85,50,295000,"PESOS","PH","Alquiler","01/04/20",1},
     {5,"11/03/20","Bs.As. G.B.A Zona Sur","La Plata",1,1,50,35,40000,"USD","Casa","Venta","24/7/2021",1},
     {6,"01/11/19","Capital Federal","Villa Crespo",1,1,56,56,150000,"USD","PH","Venta","09/02/20",1},
-    {7,"31/10/2019","Capital Federal","Villa Crespo",1,1,70,70,159500,"USD","Departamento","Venta",1},
+    {7,"31/10/2019","Capital Federal","Villa Crespo",1,1,70,70,159500,"USD","Departamento","Venta","",1},
     {8,"31/10/2019","Capital Federal","Villa Crespo",1,1,70,70,159500,"PESOS","PH","Alquiler","08/02/20",1},
     {9,"23/12/2019","Capital Federal","Parque Patricios",1,1,45,37,2400.00,"USD","Departamento","Alquiler temporal","01/04/20",1},
     {10,"23/12/2019","Capital Federal","Parque Patricios",1,1,45,37,89000,"USD","Casa","Venta","05/01/20",1},
     {11,"07/12/19","Capital Federal","Villa Pueyrredón",1,2,66,49,170000,"USD","PH","Venta","16/3/2020",1},
-    {12,"26/10/2019","Capital Federal","Boedo",1,1,68,59,149000,"PESOS","Departamento","Alquiler",1},
+    {12,"26/10/2019","Capital Federal","Boedo",1,1,68,59,149000,"PESOS","Departamento","Alquiler","",1},
     {13,"19/12/2019","Capital Federal","Boedo",1,1,50,44,115000,"USD","Departamento","Venta","28/3/2020",1},
-    {14,"30/11/2019","Bs.As. G.B.A. Zona Norte","Pilar",1,1,50,35,145000.00,"PESOS","PH","Alquiler",1}
+    {14,"30/11/2019","Bs.As. G.B.A. Zona Norte","Pilar",1,1,50,35,145000.00,"PESOS","PH","Alquiler","",1}
   };
   propiedad propiedad;
+
+  printf("ACTIVO: %i", datos[13].activo);
 
   FILE *pArchivo = fopen("propiedades.dat", "ab");
 
@@ -157,7 +159,9 @@ int main() {
     } else if (opcionElegidaMinuscula == 'q') {  // 'q' para salir
 
       continuar = 0;  // Cambia continuar a 0 para salir del bucle.
-    } else {
+    } else if(opcionElegidaMinuscula == 'g'){
+      bajaFisica();  
+    }else {
       printf(
           "------------------------- La opcion ingresada no es valida "
           "-------------------------\n\n");
