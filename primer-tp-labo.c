@@ -14,7 +14,7 @@ void cargarArchivo(int *posicionColumnaActivo) {
   FILE *pArchivo = fopen("propiedades.dat", "ab");
 
   if (pArchivo != NULL) {
-    for (int i = 0; i < 15; i++) {
+    for (int i = 1; i <= 15; i++) {
       int dia = (rand() % 28) + 1;
       int mes = (rand() % 12) + 1;
       int ano = (rand() % 23) + 2000;
