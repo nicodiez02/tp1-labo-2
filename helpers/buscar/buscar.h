@@ -3,19 +3,11 @@
 #include <stdio.h>
 
 #include "../../defines.h"
+#include "../preguntarContinuar/index.h"
+#include "../printPropiedad/index.h"
 
-bool continuar() {
-  char var;
-  printf("\n¿Desea continuar?\n");
-  printf("A) Si\nB) No\n");
-
-  scanf(" %c", &var);
-
-  if (var == 'b') {
-    return 1;
-  }
-  return 0;
-};
+int CONTNUAR_BUSCAR_POR_ID = 1;
+int TERMINAR_BUSCAR_POR_ID = 0;
 
 int ingresarID() {
   int id;
@@ -42,69 +34,66 @@ char printBuscar() {
   }
 
   if (tolower(seleccion) == 'c') {
-    return 1;
+    return 2;
   }
 
   return 0;
 };
 
-void buscarPorID(FILE *pArchivo, int id, propiedad propiedadLeida) {
+int buscarPorID(FILE *pArchivo, int id, propiedad propiedadLeida) {
   fseek(pArchivo, 0, SEEK_END);
-  fseek(pArchivo, id * sizeof(propiedad), SEEK_SET);
+  fseek(pArchivo, (id - 1) * sizeof(propiedad), SEEK_SET);
   fread(&propiedadLeida, sizeof(propiedad), 1, pArchivo);
-  printf(
-      "%.2d | %15s | %10s | %10s | %.2d | %.2d | %5.2f | %5.2f | %5.2f | %10s "
-      "| %10s | %10s | %20s | %d\n",
-      propiedadLeida.id, propiedadLeida.fecha_de_ingreso, propiedadLeida.zona,
-      propiedadLeida.ciudad, propiedadLeida.dormitorios, propiedadLeida.banos,
-      propiedadLeida.superficie_total, propiedadLeida.superficie_cubierta,
-      propiedadLeida.precio, propiedadLeida.moneda, propiedadLeida.tipo,
-      propiedadLeida.operacion, propiedadLeida.fecha_de_salida,
-      propiedadLeida.activo);
+  if (propiedadLeida.id != id) {
+    printf("\nNo existe un registro con ese ID.\n");
+    printf("\nVuelva a intentarlo\n");
+    return CONTNUAR_BUSCAR_POR_ID;
+  } else {
+    printPropiedad(propiedadLeida);
+    return TERMINAR_BUSCAR_POR_ID;
+  }
 };
 
 bool buscar() {
   FILE *pArchivo;
   propiedad propiedadLeida;
   pArchivo = fopen("propiedades.dat", "r+b");
-  int nReg;
+  int numeroRegistros;
   if (pArchivo) {
+    numeroRegistros = ftell(pArchivo) / sizeof(int);
+
     char seleccion = printBuscar();
     int id;
 
-    if (seleccion == 1) return 1;
+    if (tolower(seleccion) == 2) return 0;
 
     if (!seleccion) {
-      id = ingresarID();
-      buscarPorID(pArchivo, id, propiedadLeida);
+      int continuarPaso = CONTNUAR_BUSCAR_POR_ID;
+      while (continuarPaso) {
+        id = ingresarID();
+        continuarPaso = buscarPorID(pArchivo, id, propiedadLeida);
+      }
     } else {
       char *tipoVar[15];
+      int propiedadesEncontradas = 0;
       while (fread(&propiedadLeida, sizeof(propiedad), 1, pArchivo) == 1) {
         if (seleccion == 'a') *tipoVar = "PH";
         if (seleccion == 'b') *tipoVar = "Departamento";
         if (seleccion == 'c') *tipoVar = "Casa";
         if (strcmp(propiedadLeida.tipo, *tipoVar) == 0) {
-          printf(
-              "%.2d | %15s | %10s | %10s | %.2d | %.2d | %5.2f | %5.2f | %5.2f "
-              "| %10s | %10s | %10s | %20s | %d\n",
-              propiedadLeida.id, propiedadLeida.fecha_de_ingreso,
-              propiedadLeida.zona, propiedadLeida.ciudad,
-              propiedadLeida.dormitorios, propiedadLeida.banos,
-              propiedadLeida.superficie_total,
-              propiedadLeida.superficie_cubierta, propiedadLeida.precio,
-              propiedadLeida.moneda, propiedadLeida.tipo,
-              propiedadLeida.operacion, propiedadLeida.fecha_de_salida,
-              propiedadLeida.activo);
-        } else {
-          printf("\nNo existen registros de propiedades de tipo \"%s\"\n", *tipoVar);
-          continuar();
+          printPropiedad(propiedadLeida);
+          propiedadesEncontradas += 1;
         }
       };
+      if (propiedadesEncontradas == 0) {
+        printf("\nNo existen registros de propiedades de tipo \"%s\"\n", *tipoVar);
+        return preguntarContinuar();
+      }
     }
 
     fclose(pArchivo);
 
-    return continuar();
+    return preguntarContinuar();
   } else {
     printf("Error en la apertura del archivo\n");
     return 0;

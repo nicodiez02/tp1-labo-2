@@ -4,9 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#ifndef defines
-#define definesb
-#endif
+
 #include "./helpers/index.h"
 
 void cargarArchivo(int *posicionColumnaActivo) {
@@ -62,7 +60,7 @@ char obtenerSeleccion() {
   scanf(" %c", &opcionElegida);
 
   return opcionElegida;
-}
+};
 
 int main() {
   srand(time(NULL));
@@ -85,7 +83,10 @@ int main() {
       "activo"};
 
   while (continuar) {
-    char opcionElegida, opcionElegidaMinuscula, subMenuOpcionElegida;
+    char opcionElegida;
+    char opcionElegidaMinuscula;
+    char subMenuOpcionElegida;
+
     FILE *pArchivo;
 
     opcionElegida = obtenerSeleccion();
@@ -120,9 +121,14 @@ int main() {
       }
 
     } else if (opcionElegidaMinuscula == 'd') {
-      bool terminarBuscar = 0;
-      while (!terminarBuscar) {
+      bool terminarBuscar = 1;
+      while (terminarBuscar) {
         terminarBuscar = buscar();
+      }
+    } else if (opcionElegidaMinuscula == 'e') {
+      bool continuarModificar = CONTINUAR_MODIFICAR;
+      while (continuarModificar) {
+        continuarModificar = modificar();
       }
     } else if (opcionElegidaMinuscula == "f") {
     } else if (opcionElegidaMinuscula == 'q') {  // 'q' para salir
@@ -133,7 +139,7 @@ int main() {
           "------------------------- La opcion ingresada no es valida "
           "-------------------------\n\n");
     }
-  }
+  };
 
   return 0;
-}
+};

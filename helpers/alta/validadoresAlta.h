@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "../../defines.h"
 #ifndef validadoresAlta_h
 #define validadoresAlta_h
 
