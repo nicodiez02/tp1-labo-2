@@ -34,7 +34,7 @@ char printBuscar() {
   }
 
   if (tolower(seleccion) == 'c') {
-    return 1;
+    return 2;
   }
 
   return 0;
@@ -42,7 +42,7 @@ char printBuscar() {
 
 int buscarPorID(FILE *pArchivo, int id, propiedad propiedadLeida) {
   fseek(pArchivo, 0, SEEK_END);
-  fseek(pArchivo, id * sizeof(propiedad), SEEK_SET);
+  fseek(pArchivo, (id - 1) * sizeof(propiedad), SEEK_SET);
   fread(&propiedadLeida, sizeof(propiedad), 1, pArchivo);
   if (propiedadLeida.id != id) {
     printf("\nNo existe un registro con ese ID.\n");
@@ -65,7 +65,7 @@ bool buscar() {
     char seleccion = printBuscar();
     int id;
 
-    if (seleccion == 1) return 1;
+    if (tolower(seleccion) == 2) return 0;
 
     if (!seleccion) {
       int continuarPaso = CONTNUAR_BUSCAR_POR_ID;
@@ -75,17 +75,20 @@ bool buscar() {
       }
     } else {
       char *tipoVar[15];
+      int propiedadesEncontradas = 0;
       while (fread(&propiedadLeida, sizeof(propiedad), 1, pArchivo) == 1) {
         if (seleccion == 'a') *tipoVar = "PH";
         if (seleccion == 'b') *tipoVar = "Departamento";
         if (seleccion == 'c') *tipoVar = "Casa";
         if (strcmp(propiedadLeida.tipo, *tipoVar) == 0) {
           printPropiedad(propiedadLeida);
-        } else {
-          printf("\nNo existen registros de propiedades de tipo \"%s\"\n", *tipoVar);
-          preguntarContinuar();
+          propiedadesEncontradas += 1;
         }
       };
+      if (propiedadesEncontradas == 0) {
+        printf("\nNo existen registros de propiedades de tipo \"%s\"\n", *tipoVar);
+        return preguntarContinuar();
+      }
     }
 
     fclose(pArchivo);
