@@ -30,15 +30,12 @@ void listoArchivoBinario(char opcion){
 if (opcionToLower == 'a'){
     if ((pArchivo) != NULL){
 
-        printf("\n");
-      printf("%2s | %22s | %10s | %10s | %11s | %6s  | %15s| %18s | %7s | %10s | %10s | %10s | %21s | %5s\n",
-       "ID", "Fecha de Ingreso", "Zona", "Ciudad", "Dormitorios", "Banos", "Superficie Total",
-       "Superficie Cubierta", "Precio", "Moneda", "Tipo", "Operación", "Fecha de Salida", "Activo");
+
       fread(&prop, sizeof(propiedad), 1, pArchivo);
       
       while (!feof(pArchivo))
       {
-        printf("%.2d | %22s | %10s | %10s | %.11d | %.6d | %15f | %18f | %7f | %10s | %10s | %10s | %21s | %d\n",
+        printf("%.2d | %11s | %21s | %14s | %.1d | %.1d | %5f | %5f | %8f | %3s | %10s | %10s | %1s | %d\n",
                prop.id, prop.fecha_de_ingreso, prop.zona, prop.ciudad, prop.dormitorios,
                prop.banos, prop.superficie_total, prop.superficie_cubierta, prop.precio, prop.moneda,
                prop.tipo, prop.operacion, prop.fecha_de_salida, prop.activo);

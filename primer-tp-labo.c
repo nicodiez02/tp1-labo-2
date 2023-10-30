@@ -19,19 +19,19 @@ void cargarArchivo(int *posicionColumnaActivo) {
     {6,"01/11/19","Capital Federal","Villa Crespo",1,1,56,56,150000,"USD","PH","Venta","09/02/20",1},
     {7,"31/10/2019","Capital Federal","Villa Crespo",1,1,70,70,159500,"USD","Departamento","Venta",1},
     {8,"31/10/2019","Capital Federal","Villa Crespo",1,1,70,70,159500,"PESOS","PH","Alquiler","08/02/20",1},
-    {9,"23/12/2019","Capital Federal","Parque Patricios",1,1,45,37,2400,00,"USD","Departamento","Alquiler temporal","01/04/20",1},
+    {9,"23/12/2019","Capital Federal","Parque Patricios",1,1,45,37,2400.00,"USD","Departamento","Alquiler temporal","01/04/20",1},
     {10,"23/12/2019","Capital Federal","Parque Patricios",1,1,45,37,89000,"USD","Casa","Venta","05/01/20",1},
     {11,"07/12/19","Capital Federal","Villa Pueyrredón",1,2,66,49,170000,"USD","PH","Venta","16/3/2020",1},
     {12,"26/10/2019","Capital Federal","Boedo",1,1,68,59,149000,"PESOS","Departamento","Alquiler",1},
     {13,"19/12/2019","Capital Federal","Boedo",1,1,50,44,115000,"USD","Departamento","Venta","28/3/2020",1},
-    {14,"30/11/2019","Bs.As. G.B.A. Zona Norte","Pilar",1,1,50,35,145000,00,"PESOS","PH","Alquiler",1}
+    {14,"30/11/2019","Bs.As. G.B.A. Zona Norte","Pilar",1,1,50,35,145000.00,"PESOS","PH","Alquiler",1}
   };
   propiedad propiedad;
 
   FILE *pArchivo = fopen("propiedades.dat", "ab");
 
   if (pArchivo != NULL) {
-    for (int i = 0; i < 15; i++) {
+    for (int i = 0; i < 14; i++) {
       int dia = (rand() % 28) + 1;
       int mes = (rand() % 12) + 1;
       int ano = (rand() % 23) + 2000;
@@ -39,7 +39,7 @@ void cargarArchivo(int *posicionColumnaActivo) {
 
       sprintf(fecha, "%02d/%02d/%04d", dia, mes, ano);
 
-      propiedad.id = i;
+      propiedad.id = datos[i].id;
       strcpy(propiedad.zona, datos[i].zona);
       strcpy(propiedad.fecha_de_ingreso, datos[i].fecha_de_ingreso);
       strcpy(propiedad.ciudad, datos[i].ciudad);
