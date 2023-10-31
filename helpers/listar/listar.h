@@ -1,3 +1,5 @@
+#include "../printHeader/printHeader.h"
+
 void listoArchivoBinario(char opcion) {
   int diaInicio, mesInicio, anoInicio;
   int diaFin, mesFin, anoFin;
@@ -14,11 +16,9 @@ void listoArchivoBinario(char opcion) {
     if ((pArchivo) != NULL) {
       fread(&prop, sizeof(propiedad), 1, pArchivo);
 
+      printHeader();
       while (!feof(pArchivo)) {
-        printf("%.2d | %11s | %21s | %14s | %.1d | %.1d | %5f | %5f | %8f | %3s | %10s | %10s | %1s | %d\n",
-               prop.id, prop.fecha_de_ingreso, prop.zona, prop.ciudad, prop.dormitorios,
-               prop.banos, prop.superficie_total, prop.superficie_cubierta, prop.precio, prop.moneda,
-               prop.tipo, prop.operacion, prop.fecha_de_salida, prop.activo);
+        printPropiedad(prop);
         fread(&prop, sizeof(propiedad), 1, pArchivo);
       }
 
@@ -29,14 +29,12 @@ void listoArchivoBinario(char opcion) {
     }
     getchar();
   } else if (opcionToLower == 'b') {
+    printHeader();
     while (!feof(pArchivo)) {
       fread(&prop, sizeof(propiedad), 1, pArchivo);
 
       if (prop.activo == 1) {
-        printf("%.2d | %11s | %21s | %14s | %.1d | %.1d | %5f | %5f | %8f | %3s | %10s | %10s | %1s | %d\n",
-               prop.id, prop.fecha_de_ingreso, prop.zona, prop.ciudad, prop.dormitorios,
-               prop.banos, prop.superficie_total, prop.superficie_cubierta, prop.precio, prop.moneda,
-               prop.tipo, prop.operacion, prop.fecha_de_salida, prop.activo);
+        printPropiedad(prop);
       }
     }
 
@@ -59,12 +57,10 @@ void listoArchivoBinario(char opcion) {
       printf("Opción no válida\n");
     }
 
+    printHeader();
     while (fread(&prop, sizeof(propiedad), 1, pArchivo) == 1) {
       if (strcmp(prop.tipo, nombrePropiedad) == 0) {
-        printf("%.2d | %11s | %21s | %14s | %.1d | %.1d | %5f | %5f | %8f | %3s | %10s | %10s | %1s | %d\n",
-               prop.id, prop.fecha_de_ingreso, prop.zona, prop.ciudad, prop.dormitorios,
-               prop.banos, prop.superficie_total, prop.superficie_cubierta, prop.precio, prop.moneda,
-               prop.tipo, prop.operacion, prop.fecha_de_salida, prop.activo);
+        printPropiedad(prop);
       }
     }
 
@@ -105,6 +101,7 @@ void listoArchivoBinario(char opcion) {
       }
     }
 
+    printHeader();
     while (fread(&prop, sizeof(propiedad), 1, pArchivo) == 1) {
       struct tm fechaPropiedad_tm;
 
@@ -137,13 +134,7 @@ void listoArchivoBinario(char opcion) {
             fechaPropiedad_timestamp <= fechaFin_timestamp) {
           // La fecha de la propiedad está dentro del rango
           // Imprime los detalles de la propiedad
-          printf("%.2d | %15s | %10s | %10s | %.2d | %.2d | %5.2f | %5.2f | %5.2f | %10s | %10s | %10s | %20s | %d\n",
-                 prop.id, prop.fecha_de_ingreso, prop.zona,
-                 prop.ciudad, prop.dormitorios, prop.banos,
-                 prop.superficie_total, prop.superficie_cubierta,
-                 prop.precio, prop.moneda, prop.tipo,
-                 prop.operacion, prop.fecha_de_salida,
-                 prop.activo);
+          printPropiedad(prop);
         }
       } else {
         return;

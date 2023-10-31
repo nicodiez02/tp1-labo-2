@@ -36,7 +36,7 @@ int modificar() {
   if (id == 00) return !CONTINUAR_MODIFICAR;
 
   fseek(pArchivo, 0, SEEK_END);
-  fseek(pArchivo, id * sizeof(propiedad), SEEK_SET);
+  fseek(pArchivo, (id - 1) * sizeof(propiedad), SEEK_SET);
   fread(&propiedadLeida, sizeof(propiedad), 1, pArchivo);
 
   // validar que ingrese un numero y no letras
