@@ -9,21 +9,20 @@
 
 void cargarArchivo(int *posicionColumnaActivo) {
   propiedad datos[15] = {
-    {1,"23/12/2019","Capital Federal","San Cristobal",7,2,140.0,140.0,153000.0,"USD","Departamento","Venta","6/2/2020",1},
-    {2,"21/11/2019","Capital Federal","Boedo",1,2,70,58,159000,"USD","PH","Venta","05/01/20",1},
-    {3,"01/11/19","Capital Federal","Palermo",1,1,45,45,125000,"USD","Departamento","Venta",1},
-    {4,"23/12/2019","Capital Federal","Palermo",1,1,85,50,295000,"PESOS","PH","Alquiler","01/04/20",1},
-    {5,"11/03/20","Bs.As. G.B.A Zona Sur","La Plata",1,1,50,35,40000,"USD","Casa","Venta","24/7/2021",1},
-    {6,"01/11/19","Capital Federal","Villa Crespo",1,1,56,56,150000,"USD","PH","Venta","09/02/20",1},
-    {7,"31/10/2019","Capital Federal","Villa Crespo",1,1,70,70,159500,"USD","Departamento","Venta","",1},
-    {8,"31/10/2019","Capital Federal","Villa Crespo",1,1,70,70,159500,"PESOS","PH","Alquiler","08/02/20",1},
-    {9,"23/12/2019","Capital Federal","Parque Patricios",1,1,45,37,2400.00,"USD","Departamento","Alquiler temporal","01/04/20",1},
-    {10,"23/12/2019","Capital Federal","Parque Patricios",1,1,45,37,89000,"USD","Casa","Venta","05/01/20",1},
-    {11,"07/12/19","Capital Federal","Villa Pueyrredón",1,2,66,49,170000,"USD","PH","Venta","16/3/2020",1},
-    {12,"26/10/2019","Capital Federal","Boedo",1,1,68,59,149000,"PESOS","Departamento","Alquiler","",1},
-    {13,"19/12/2019","Capital Federal","Boedo",1,1,50,44,115000,"USD","Departamento","Venta","28/3/2020",1},
-    {14,"30/11/2019","Bs.As. G.B.A. Zona Norte","Pilar",1,1,50,35,145000.00,"PESOS","PH","Alquiler","",1}
-  };
+      {1, "23/12/2019", "Capital Federal", "San Cristobal", 7, 2, 140.0, 140.0, 153000.0, "USD", "Departamento", "Venta", "6/2/2020", 1},
+      {2, "21/11/2019", "Capital Federal", "Boedo", 1, 2, 70, 58, 159000, "USD", "PH", "Venta", "05/01/20", 1},
+      {3, "01/11/2019", "Capital Federal", "Palermo", 1, 1, 45, 45, 125000, "USD", "Departamento", "Venta", 1},
+      {4, "23/12/2019", "Capital Federal", "Palermo", 1, 1, 85, 50, 295000, "PESOS", "PH", "Alquiler", "01/04/20", 1},
+      {5, "11/03/2020", "Bs.As. G.B.A Zona Sur", "La Plata", 1, 1, 50, 35, 40000, "USD", "Casa", "Venta", "24/7/2021", 1},
+      {6, "01/11/2019", "Capital Federal", "Villa Crespo", 1, 1, 56, 56, 150000, "USD", "PH", "Venta", "09/02/20", 1},
+      {7, "31/10/2019", "Capital Federal", "Villa Crespo", 1, 1, 70, 70, 159500, "USD", "Departamento", "Venta", "", 1},
+      {8, "31/10/2019", "Capital Federal", "Villa Crespo", 1, 1, 70, 70, 159500, "PESOS", "PH", "Alquiler", "08/02/20", 1},
+      {9, "23/12/2019", "Capital Federal", "Parque Patricios", 1, 1, 45, 37, 2400.00, "USD", "Departamento", "Alquiler temporal", "01/04/20", 1},
+      {10, "23/12/2019", "Capital Federal", "Parque Patricios", 1, 1, 45, 37, 89000, "USD", "Casa", "Venta", "05/01/20", 1},
+      {11, "07/12/2019", "Capital Federal", "Villa Pueyrredón", 1, 2, 66, 49, 170000, "USD", "PH", "Venta", "16/3/2020", 1},
+      {12, "26/10/2019", "Capital Federal", "Boedo", 1, 1, 68, 59, 149000, "PESOS", "Departamento", "Alquiler", "", 1},
+      {13, "19/12/2019", "Capital Federal", "Boedo", 1, 1, 50, 44, 115000, "USD", "Departamento", "Venta", "28/3/2020", 1},
+      {14, "30/11/2019", "Bs.As. G.B.A. Zona Norte", "Pilar", 1, 1, 50, 35, 145000.00, "PESOS", "PH", "Alquiler", "", 1}};
   propiedad propiedad;
 
   printf("ACTIVO: %i", datos[13].activo);
@@ -84,30 +83,27 @@ int main() {
 
   int continuar = 1;
   int numPropiedades = sizeof(propiedades) / sizeof(propiedades[0]);
-  int idELiminar,posicionColumnaActivo,error;
+  int idELiminar, posicionColumnaActivo, error;
   char nombreArchivoCsv[50];
-  bool terminarBuscar,continuarModificar;
+  bool terminarBuscar, continuarModificar;
 
   while (continuar) {
-    char opcionElegida,opcionElegidaMinuscula,subMenuOpcionElegida;
+    char opcionElegida, opcionElegidaMinuscula, subMenuOpcionElegida;
     FILE *pArchivo;
 
     opcionElegida = obtenerSeleccion();
     opcionElegidaMinuscula = tolower(opcionElegida);
 
     if (opcionElegidaMinuscula == 'a') {
-
       posicionColumnaActivo = 0;
       creoArchivoBinario(&pArchivo);
       cargarArchivo(&posicionColumnaActivo);
 
     } else if (opcionElegidaMinuscula == 'b') {
-
       subMenuOpcionElegida = submenuListar();
       listoArchivoBinario(subMenuOpcionElegida);
 
     } else if (opcionElegidaMinuscula == 'c') {
-
       error = 1;
       propiedad persistePropiedad;
 
@@ -129,56 +125,54 @@ int main() {
 
     } else if (opcionElegidaMinuscula == 'd') {
       terminarBuscar = 1;
-        while (terminarBuscar) {
-          terminarBuscar = buscar();
-        }
+      while (terminarBuscar) {
+        terminarBuscar = buscar();
+      }
 
     } else if (opcionElegidaMinuscula == 'e') {
       continuarModificar = CONTINUAR_MODIFICAR;
-      
+
       while (continuarModificar) {
         continuarModificar = modificar();
       }
     } else if (opcionElegidaMinuscula == 'f') {
       pArchivo = fopen("propiedades.dat", "rb+");
       error = 1;
-      idELiminar = 0;;
+      idELiminar = 0;
+      ;
 
       listoArchivoBinario('a');
-      while (error == 1)
-      {  
+      while (error == 1) {
         printf("\nIngrese el id del registro que desea dar de baja:");
-        
-        if(idValido(&pArchivo)){
+
+        if (idValido(&pArchivo)) {
           error = 0;
         }
-
       }
 
       bajalogica(pArchivo);
       fclose(pArchivo);
-    }else if(opcionElegidaMinuscula == 'g'){
-      
-      bajaFisica(nombreArchivoCsv);  
+    } else if (opcionElegidaMinuscula == 'g') {
+      bajaFisica(nombreArchivoCsv);
+      // *nombreArchivoCsv = algo;
+    } else if (opcionElegidaMinuscula == 'h') {
+      FILE *pArchivo = fopen(nombreArchivoCsv, "r");
 
-    }else if(opcionElegidaMinuscula == 'h'){
-        FILE *pArchivo = fopen(nombreArchivoCsv, "r");
+      if (pArchivo == NULL) {
+        perror("Error al abrir el archivo XYZ");
+      }
 
-        if (pArchivo == NULL) {
-            perror("Error al abrir el archivo XYZ");
-        }
+      char linea[500];
 
-        char linea[500]; 
+      while (fgets(linea, sizeof(linea), pArchivo) != NULL) {
+        printf("%s", linea);
+      }
 
-        while (fgets(linea, sizeof(linea), pArchivo) != NULL) {
-            printf("%s", linea);
-        }
+      fclose(pArchivo);
+    } else if (opcionElegidaMinuscula == 'q') {
+      continuar = 0;
 
-        fclose(pArchivo);
-    }else if (opcionElegidaMinuscula == 'q') {
-      continuar = 0;  
-    
-    }else {
+    } else {
       printf(
           "------------------------- La opcion ingresada no es valida "
           "-------------------------\n\n");
