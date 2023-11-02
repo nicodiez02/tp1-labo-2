@@ -58,6 +58,7 @@ int modificar() {
     bool confirmar = confirmarOperacion("Ciudad");
     if (confirmar) {
       strcpy(propiedadLeida.ciudad, nuevoBarrio);
+      
       fseek(pArchivo, -sizeof(propiedad), SEEK_CUR);
       fwrite(&propiedadLeida, sizeof(propiedad), 1, pArchivo);
       printPropiedad(propiedadLeida);

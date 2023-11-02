@@ -175,6 +175,7 @@ int alta(const char *campoAComprobar, propiedad *nuevaPropiedad) {
       }
     } while (error > 0);
   }
+
   if (strcmp(campoAComprobar, "ciudad") == 0) {
     do {
       if (validarTipoDato(&validacion, "cadena")) {
@@ -302,8 +303,7 @@ int escriboPropiedad(propiedad *nuevaProp) {
       0,
   };
 
-  FILE *pArchivo = fopen("propiedades.dat", "r+b");  // Abre el archivo en modo de adición binaria
-
+  FILE *pArchivo = fopen("propiedades.dat", "r+b");  
   if (pArchivo != NULL) {
     fseek(pArchivo, 0, SEEK_END);
     numeroRegistros = ftell(pArchivo) / sizeof(propiedad);

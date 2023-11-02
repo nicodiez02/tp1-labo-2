@@ -25,8 +25,6 @@ void cargarArchivo(int *posicionColumnaActivo) {
       {14, "30/11/2019", "Bs.As. G.B.A. Zona Norte", "Pilar", 1, 1, 50, 35, 145000.00, "PESOS", "PH", "Alquiler", "", 1}};
   propiedad propiedad;
 
-  printf("ACTIVO: %i", datos[13].activo);
-
   FILE *pArchivo = fopen("propiedades.dat", "ab");
 
   if (pArchivo != NULL) {
@@ -118,9 +116,9 @@ int main() {
       }
 
       if (escriboPropiedad(&persistePropiedad) == 0) {
-        printf("Propiedad escrita correctamente");
+        printf("\n- - - - - - - -  PROPIEDAD ESCRITA CORRECTAMENTE - - - - - - - - \n");
       } else {
-        printf("Error al escribir la nueva propiedad al archivo.\n");
+        printf("\nError al escribir la nueva propiedad al archivo.\n");
       }
 
     } else if (opcionElegidaMinuscula == 'd') {
