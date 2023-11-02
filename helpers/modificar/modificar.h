@@ -49,20 +49,22 @@ int modificar() {
 
   printPropiedad(propiedadLeida);
   printf("\n¿Que dato desea modificar?\n");
-  printf("\nA) Barrio\nB) Precio\n");
+  printf("\nA) Ciudad\nB) Precio\n");
   printf("\nPresione cualquier tecla para volver al menu principal\n");
   scanf(" %c", &seleccion);
   if (tolower(seleccion) == 'a') {
-    printf("\nIngrese el nuevo barrio:\n");
+    printf("\nIngrese el nuevo ciudad:\n");
     scanf(" %s", nuevoBarrio);
-    bool confirmar = confirmarOperacion("Barrio");
+    bool confirmar = confirmarOperacion("Ciudad");
     if (confirmar) {
       strcpy(propiedadLeida.ciudad, nuevoBarrio);
       fseek(pArchivo, -sizeof(propiedad), SEEK_CUR);
       fwrite(&propiedadLeida, sizeof(propiedad), 1, pArchivo);
       printPropiedad(propiedadLeida);
+      fclose(pArchivo);
       return preguntarContinuar();
     } else {
+      fclose(pArchivo);
       return preguntarContinuar();
     }
   } else if (tolower(seleccion) == 'b') {
@@ -74,8 +76,10 @@ int modificar() {
       fseek(pArchivo, -sizeof(propiedad), SEEK_CUR);
       fwrite(&propiedadLeida, sizeof(propiedad), 1, pArchivo);
       printPropiedad(propiedadLeida);
+      fclose(pArchivo);
       return preguntarContinuar();
     } else {
+      fclose(pArchivo);
       return preguntarContinuar();
     }
   }
